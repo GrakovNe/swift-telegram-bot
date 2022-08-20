@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/swift_app
+    username: swift_app
+    password: swift_app
+    driverClassName: org.postgresql.Driver
