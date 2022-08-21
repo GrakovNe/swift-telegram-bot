@@ -17,11 +17,11 @@ class PaymentService(
     fun fetchPaymentStatus(id: UUID): Either<PaymentError, PaymentStatus> = cacheService
         .fetchCached(id)
         .fold(
-            ifLeft = { retrieveAndCache(id) },
+            ifLeft = { updateAndCache(id) },
             ifRight = { Either.Right(it) }
         )
 
-    private fun retrieveAndCache(id: UUID) = retrievePayment(id).tap { cacheService.storePayment(it) }
+    fun updateAndCache(id: UUID) = retrievePayment(id).tap { cacheService.storePayment(it) }
 
     private fun retrievePayment(id: UUID) = dataServices
         .map { provider ->

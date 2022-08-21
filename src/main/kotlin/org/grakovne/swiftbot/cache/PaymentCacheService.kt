@@ -5,12 +5,13 @@ import org.grakovne.swiftbot.cache.domain.Payment
 import org.grakovne.swiftbot.cache.repository.PaymentRepository
 import org.grakovne.swiftbot.dto.PaymentStatus
 import org.springframework.stereotype.Service
-import java.time.Duration
 import java.time.Instant
 import java.util.*
 
 @Service
 class PaymentCacheService(private val paymentRepository: PaymentRepository) {
+
+    fun fetchOldestCached() = paymentRepository.findTopByOrderByLastModifiedAtDesc()
 
     fun fetchCached(id: UUID): Either<CacheError, PaymentStatus> = paymentRepository
         .findById(id)
