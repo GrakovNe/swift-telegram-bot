@@ -1,4 +1,4 @@
-package org.grakovne.swiftbot.synchronization
+package org.grakovne.swiftbot.payment.synchronization
 
 sealed interface PaymentError
 

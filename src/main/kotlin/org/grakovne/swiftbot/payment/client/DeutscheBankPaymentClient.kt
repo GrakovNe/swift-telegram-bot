@@ -1,8 +1,8 @@
-package org.grakovne.swiftbot.client
+package org.grakovne.swiftbot.payment.client
 
 import arrow.core.Either
 import arrow.core.flatMap
-import org.grakovne.swiftbot.dto.PaymentStatus
+import org.grakovne.swiftbot.dto.PaymentView
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
@@ -12,7 +12,7 @@ import java.util.*
 @Service
 class DeutscheBankPaymentClient(private val restTemplate: RestTemplate) {
 
-    fun fetchPaymentStatus(id: UUID): Either<String, PaymentStatus> {
+    fun fetchPaymentStatus(id: UUID): Either<String, PaymentView> {
         val response = try {
             fetchResponse(id)
         } catch (ex: HttpStatusCodeException) {
@@ -45,7 +45,7 @@ data class DeutscheBankPaymentStatus(
     val lastUpdate: Instant
 )
 
-fun DeutscheBankPaymentStatus.asCommon() = PaymentStatus(
+fun DeutscheBankPaymentStatus.asCommon() = PaymentView(
     id = this.uetr,
     status = this.status,
     lastUpdateTimestamp = this.lastUpdate

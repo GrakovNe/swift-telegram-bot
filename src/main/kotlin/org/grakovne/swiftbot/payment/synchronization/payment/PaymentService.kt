@@ -1,10 +1,10 @@
-package org.grakovne.swiftbot.synchronization.payment
+package org.grakovne.swiftbot.payment.synchronization.payment
 
 import arrow.core.Either
 import arrow.core.sequence
-import org.grakovne.swiftbot.cache.PaymentCacheService
-import org.grakovne.swiftbot.dto.PaymentStatus
-import org.grakovne.swiftbot.synchronization.PaymentError
+import org.grakovne.swiftbot.payment.cache.PaymentCacheService
+import org.grakovne.swiftbot.dto.PaymentView
+import org.grakovne.swiftbot.payment.synchronization.PaymentError
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -14,7 +14,7 @@ class PaymentService(
     private val cacheService: PaymentCacheService
 ) {
 
-    fun fetchPaymentStatus(id: UUID): Either<PaymentError, PaymentStatus> = cacheService
+    fun fetchPaymentStatus(id: UUID): Either<PaymentError, PaymentView> = cacheService
         .fetchCached(id)
         .fold(
             ifLeft = { updateAndCache(id) },

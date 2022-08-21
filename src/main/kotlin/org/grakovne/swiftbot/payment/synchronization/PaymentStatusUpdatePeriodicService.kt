@@ -1,7 +1,7 @@
-package org.grakovne.swiftbot.synchronization
+package org.grakovne.swiftbot.payment.synchronization
 
-import org.grakovne.swiftbot.cache.PaymentCacheService
-import org.grakovne.swiftbot.synchronization.payment.PaymentService
+import org.grakovne.swiftbot.payment.cache.PaymentCacheService
+import org.grakovne.swiftbot.payment.synchronization.payment.PaymentService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.Duration

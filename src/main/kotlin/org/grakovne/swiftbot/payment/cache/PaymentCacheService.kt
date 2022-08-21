@@ -1,9 +1,9 @@
-package org.grakovne.swiftbot.cache
+package org.grakovne.swiftbot.payment.cache
 
 import arrow.core.Either
-import org.grakovne.swiftbot.cache.domain.Payment
-import org.grakovne.swiftbot.cache.repository.PaymentRepository
-import org.grakovne.swiftbot.dto.PaymentStatus
+import org.grakovne.swiftbot.payment.cache.domain.Payment
+import org.grakovne.swiftbot.payment.cache.repository.PaymentRepository
+import org.grakovne.swiftbot.dto.PaymentView
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*
@@ -13,17 +13,17 @@ class PaymentCacheService(private val paymentRepository: PaymentRepository) {
 
     fun fetchOldestCached() = paymentRepository.findTopByOrderByLastModifiedAtDesc()
 
-    fun fetchCached(id: UUID): Either<CacheError, PaymentStatus> = paymentRepository
+    fun fetchCached(id: UUID): Either<CacheError, PaymentView> = paymentRepository
         .findById(id)
         .orElseGet { null }
-        ?.toStatus()
+        ?.toView()
         ?.let { Either.Right(it) }
         ?: Either.Left(NotFound(id))
 
-    fun storePayment(dto: PaymentStatus) = dto.toPayment().let { paymentRepository.save(it) }
+    fun storePayment(dto: PaymentView) = dto.toPayment().let { paymentRepository.save(it) }
 }
 
-private fun PaymentStatus.toPayment(): Payment {
+private fun PaymentView.toPayment(): Payment {
     return Payment(
         id = this.id,
         status = this.status,
@@ -32,7 +32,7 @@ private fun PaymentStatus.toPayment(): Payment {
     )
 }
 
-private fun Payment.toStatus() = PaymentStatus(
+private fun Payment.toView() = PaymentView(
     id = this.id,
     status = this.status,
     lastUpdateTimestamp = this.paymentLastUpdateAt

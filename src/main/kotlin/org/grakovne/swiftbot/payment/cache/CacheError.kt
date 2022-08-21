@@ -1,4 +1,4 @@
-package org.grakovne.swiftbot.cache
+package org.grakovne.swiftbot.payment.cache
 
 import java.util.UUID
 

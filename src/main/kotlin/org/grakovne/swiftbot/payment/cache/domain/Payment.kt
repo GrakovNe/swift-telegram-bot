@@ -1,4 +1,4 @@
-package org.grakovne.swiftbot.cache.domain
+package org.grakovne.swiftbot.payment.cache.domain
 
 import java.time.Instant
 import java.util.UUID
