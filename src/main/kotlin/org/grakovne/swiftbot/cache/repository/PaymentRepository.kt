@@ -2,10 +2,9 @@ package org.grakovne.swiftbot.cache.repository
 
 import org.grakovne.swiftbot.cache.domain.Payment
 import org.springframework.data.jpa.repository.JpaRepository
-import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 interface PaymentRepository: JpaRepository<Payment, UUID> {
 
-    fun findByIdAndLastModifiedAtLessThan(id: UUID, timestamp: Instant): Payment?
+    fun findTop1OrderByLastModifiedAt(id: UUID): Payment?
 }

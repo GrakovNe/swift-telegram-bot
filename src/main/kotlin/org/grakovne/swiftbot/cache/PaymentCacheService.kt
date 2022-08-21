@@ -13,7 +13,8 @@ import java.util.*
 class PaymentCacheService(private val paymentRepository: PaymentRepository) {
 
     fun fetchCached(id: UUID): Either<CacheError, PaymentStatus> = paymentRepository
-        .findByIdAndLastModifiedAtLessThan(id, Instant.now().plus(Duration.ofHours(3)))
+        .findById(id)
+        .orElseGet { null }
         ?.toStatus()
         ?.let { Either.Right(it) }
         ?: Either.Left(NotFound(id))
