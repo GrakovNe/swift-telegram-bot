@@ -6,5 +6,5 @@ import java.util.*
 
 interface PaymentRepository : JpaRepository<Payment, UUID> {
 
-    fun findTopByOrderByLastModifiedAtDesc(): Payment?
+    fun findTopByOrderByLastModifiedAtAsc(): Payment?
 }

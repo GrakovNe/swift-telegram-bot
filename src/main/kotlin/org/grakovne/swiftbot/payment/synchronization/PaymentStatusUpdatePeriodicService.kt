@@ -18,12 +18,15 @@ class PaymentStatusUpdatePeriodicService(
 
     @Scheduled(fixedDelay = 1000)
     fun checkOldestCachedPayment() {
-        paymentCacheService
-            .fetchOldestCached()
+        val oldestPayment = paymentCacheService.fetchOldestCached()
+        oldestPayment
             ?.takeIf {
-                it.lastModifiedAt
-                    .isBefore(Instant.now().minus(Duration.ofMinutes(configurationProperties.paymentCacheTtlMinutes)))
+                it.lastModifiedAt.isBefore(
+                    Instant.now().minus(Duration.ofMinutes(configurationProperties.paymentCacheTtlMinutes))
+                )
             }
             ?.let { eventSender.sendEvent(PaymentCacheOutdatedEvent(it.id, it.status)) }
+
+        oldestPayment?.let { paymentCacheService.updateLastUpdateDateTime(it.id, Instant.now()) }
     }
 }

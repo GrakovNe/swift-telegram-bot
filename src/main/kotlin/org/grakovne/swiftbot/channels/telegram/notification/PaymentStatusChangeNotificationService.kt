@@ -41,7 +41,7 @@ class PaymentStatusChangeNotificationService(
         bot.execute(SendMessage(chatId, event.toMessage()).parseMode(ParseMode.HTML)).also {
             eventSender.sendEvent(
                 LoggingEvent(
-                    LogLevel.WARN,
+                    LogLevel.DEBUG,
                     "Payment status change notification sent"
                 )
             )

@@ -11,7 +11,7 @@ import java.util.*
 @Service
 class PaymentCacheService(private val paymentRepository: PaymentRepository) {
 
-    fun fetchOldestCached() = paymentRepository.findTopByOrderByLastModifiedAtDesc()
+    fun fetchOldestCached() = paymentRepository.findTopByOrderByLastModifiedAtAsc()
 
     fun fetchCached(id: UUID): Either<CacheError, PaymentView> = paymentRepository
         .findById(id)
@@ -21,6 +21,12 @@ class PaymentCacheService(private val paymentRepository: PaymentRepository) {
         ?: Either.Left(NotFound(id))
 
     fun storePayment(dto: PaymentView) = dto.toPayment().let { paymentRepository.save(it) }
+
+    fun updateLastUpdateDateTime(id: UUID, now: Instant) = paymentRepository
+        .findById(id)
+        .orElseGet { null }
+        ?.copy(lastModifiedAt = now)
+        ?.let { paymentRepository.save(it) }
 }
 
 private fun PaymentView.toPayment(): Payment {
