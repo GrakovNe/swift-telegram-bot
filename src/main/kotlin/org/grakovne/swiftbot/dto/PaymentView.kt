@@ -5,6 +5,6 @@ import java.util.UUID
 
 data class PaymentView(
     val id: UUID,
-    val status: String,
+    val status: PaymentStatus,
     val lastUpdateTimestamp: Instant
 )

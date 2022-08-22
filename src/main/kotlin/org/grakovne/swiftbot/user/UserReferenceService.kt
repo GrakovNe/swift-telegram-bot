@@ -10,13 +10,13 @@ import java.util.*
 @Service
 class UserReferenceService(private val userReferenceRepository: UserReferenceRepository) {
 
-    fun fetchUserSubscription(userId: UUID): List<UUID> = userReferenceRepository
+    fun fetchUserSubscription(userId: String): List<UUID> = userReferenceRepository
         .findById(userId)
         .map { it.subscribedPayments }
         .orElseGet { emptySet() }
         .toList()
 
-    fun subscribeToPayment(userId: UUID, paymentId: UUID, source: UserReferenceSource) =
+    fun subscribeToPayment(userId: String, paymentId: UUID, source: UserReferenceSource) =
         userReferenceRepository
             .findById(userId)
             .orElseGet { createUser(userId, setOf(paymentId), source) }
@@ -27,7 +27,7 @@ class UserReferenceService(private val userReferenceRepository: UserReferenceRep
     fun updateUser(request: UserView) = request.toUser().let { userReferenceRepository.save(it) }
 
     fun createUser(
-        id: UUID,
+        id: String,
         subscribedPayments: Set<UUID>,
         source: UserReferenceSource,
     ): UserReference = UserReference(

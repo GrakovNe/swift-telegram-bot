@@ -2,6 +2,7 @@ package org.grakovne.swiftbot.payment.client
 
 import arrow.core.Either
 import arrow.core.flatMap
+import org.grakovne.swiftbot.dto.PaymentStatus
 import org.grakovne.swiftbot.dto.PaymentView
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
@@ -47,6 +48,6 @@ data class DeutscheBankPaymentStatus(
 
 fun DeutscheBankPaymentStatus.asCommon() = PaymentView(
     id = this.uetr,
-    status = this.status,
+    status = this.status.let { PaymentStatus.fromString(it) ?: PaymentStatus.UNEXPECTED },
     lastUpdateTimestamp = this.lastUpdate
 )

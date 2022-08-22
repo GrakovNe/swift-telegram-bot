@@ -19,7 +19,7 @@ class UserPaymentService(
         .fetchPaymentStatus(request.paymentId)
         .tap {
             userReferenceService.subscribeToPayment(
-                request.userReference,
+                request.userReference.toString(),
                 request.paymentId,
                 UserReferenceSource.REST
             )

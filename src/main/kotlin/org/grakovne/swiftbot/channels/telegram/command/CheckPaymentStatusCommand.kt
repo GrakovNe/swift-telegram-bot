@@ -5,11 +5,16 @@ import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
 import com.pengrad.telegrambot.request.SendMessage
 import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
+import org.grakovne.swiftbot.dto.PaymentView
 import org.grakovne.swiftbot.payment.synchronization.CommonSynchronizationError
 import org.grakovne.swiftbot.payment.synchronization.payment.PaymentService
 import org.grakovne.swiftbot.user.UserReferenceService
 import org.grakovne.swiftbot.user.domain.UserReferenceSource
+import org.springframework.format.datetime.standard.InstantFormatter
 import org.springframework.stereotype.Service
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -36,18 +41,37 @@ class CheckPaymentStatusCommand(
             .fetchPaymentStatus(paymentId)
             .tap {
                 userReferenceService.subscribeToPayment(
-                    UUID.randomUUID(),
+                    update.message().chat().id().toString(),
                     paymentId,
                     UserReferenceSource.TELEGRAM
                 )
             }
-            .map { view -> bot.execute(SendMessage(update.message().chat().id(), view.toString())) }
+            .map { view -> bot.execute(SendMessage(update.message().chat().id(), view.toMessage())) }
             .map { }
             .mapLeft {
                 when (it) {
                     is CommonSynchronizationError -> TelegramUpdateProcessingError.INTERNAL_ERROR
                 }
             }
+    }
+
+    private fun PaymentView.toMessage(): String {
+        return """
+            Payment Info:
+            
+            UETR: ${this.id}
+            Current status: ${this.status}
+            Last update: ${this.lastUpdateTimestamp.toMessage()}
+        """.trimIndent()
+    }
+
+    private fun Instant.toMessage(): String = dateFormatter.format(this)
+
+    companion object {
+        val dateFormatter = DateTimeFormatter
+            .ofPattern("dd.MM.yyyy hh:mm:ss")
+            .withZone(ZoneId.of("UTC"));
+
     }
 
 }

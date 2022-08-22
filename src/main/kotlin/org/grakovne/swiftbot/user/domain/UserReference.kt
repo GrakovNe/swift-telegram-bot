@@ -6,11 +6,11 @@ import javax.persistence.*
 @Entity
 data class UserReference(
     @Id
-    val id: UUID,
+    val id: String,
     @Enumerated(EnumType.STRING)
     val source: UserReferenceSource,
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     val subscribedPayments: Set<UUID>
 )
 
