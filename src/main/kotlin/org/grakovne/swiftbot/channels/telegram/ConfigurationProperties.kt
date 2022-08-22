@@ -8,4 +8,5 @@ import kotlin.properties.Delegates
 @ConfigurationProperties(prefix = "telegram")
 class ConfigurationProperties {
     var token: String by Delegates.notNull()
+    var adminChat: String by Delegates.notNull()
 }

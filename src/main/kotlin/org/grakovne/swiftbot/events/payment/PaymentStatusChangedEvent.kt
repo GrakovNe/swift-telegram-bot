@@ -1,4 +1,4 @@
-package org.grakovne.swiftbot.events
+package org.grakovne.swiftbot.events.payment
 
 import org.grakovne.swiftbot.dto.PaymentStatus
 import org.grakovne.swiftbot.events.core.Event

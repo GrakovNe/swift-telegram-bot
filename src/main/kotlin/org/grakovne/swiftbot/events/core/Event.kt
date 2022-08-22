@@ -4,7 +4,8 @@ abstract class Event(val eventType: EventType)
 
 enum class EventType {
     PAYMENT_CACHE_OUTDATED,
-    PAYMENT_STATUS_CHANGED
+    PAYMENT_STATUS_CHANGED,
+    LOG_SENT
 }
 
 

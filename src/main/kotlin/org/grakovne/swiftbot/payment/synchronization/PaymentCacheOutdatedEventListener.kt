@@ -1,9 +1,11 @@
-package org.grakovne.swiftbot.events
+package org.grakovne.swiftbot.payment.synchronization
 
 import org.grakovne.swiftbot.events.core.Event
 import org.grakovne.swiftbot.events.core.EventListener
 import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.core.EventType
+import org.grakovne.swiftbot.events.payment.PaymentCacheOutdatedEvent
+import org.grakovne.swiftbot.events.payment.PaymentStatusChangedEvent
 import org.grakovne.swiftbot.payment.synchronization.payment.PaymentService
 import org.springframework.stereotype.Service
 

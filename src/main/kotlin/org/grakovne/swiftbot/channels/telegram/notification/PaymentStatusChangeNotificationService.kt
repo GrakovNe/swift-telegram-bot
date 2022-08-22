@@ -4,15 +4,13 @@ import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.request.ParseMode
 import com.pengrad.telegrambot.request.SendMessage
 import org.grakovne.swiftbot.common.converter.toMessage
-import org.grakovne.swiftbot.dto.PaymentView
-import org.grakovne.swiftbot.events.PaymentStatusChangedEvent
+import org.grakovne.swiftbot.events.payment.PaymentStatusChangedEvent
 import org.grakovne.swiftbot.events.core.Event
 import org.grakovne.swiftbot.events.core.EventListener
 import org.grakovne.swiftbot.events.core.EventType
 import org.grakovne.swiftbot.user.UserReferenceService
 import org.grakovne.swiftbot.user.domain.UserReferenceSource
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class PaymentStatusChangeNotificationService(
