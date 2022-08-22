@@ -8,6 +8,10 @@ import com.pengrad.telegrambot.request.SendMessage
 import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
 import org.grakovne.swiftbot.common.converter.toMessage
 import org.grakovne.swiftbot.dto.PaymentView
+import org.grakovne.swiftbot.events.core.EventSender
+import org.grakovne.swiftbot.events.internal.LogLevel
+import org.grakovne.swiftbot.events.internal.LogLevel.DEBUG
+import org.grakovne.swiftbot.events.internal.LoggingEvent
 import org.grakovne.swiftbot.payment.synchronization.CommonSynchronizationError
 import org.grakovne.swiftbot.payment.synchronization.payment.PaymentService
 import org.grakovne.swiftbot.user.UserReferenceService
@@ -19,7 +23,8 @@ import java.util.regex.Pattern
 @Service
 class CheckPaymentStatusCommand(
     private val paymentService: PaymentService,
-    private val userReferenceService: UserReferenceService
+    private val userReferenceService: UserReferenceService,
+    private val eventSender: EventSender
 ) : TelegramOnMessageCommand {
 
     override fun getHelp(): String = "/check <UETR> - Checks Current payment status and subscribes for a changes"
@@ -49,6 +54,7 @@ class CheckPaymentStatusCommand(
             .map { view ->
                 bot.execute(SendMessage(update.message().chat().id(), view.toMessage()).parseMode(ParseMode.HTML))
             }
+            .tap { eventSender.sendEvent(LoggingEvent(DEBUG, "Checked payment status with id $paymentId")) }
             .map { }
             .mapLeft {
                 when (it) {

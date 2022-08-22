@@ -1,6 +1,7 @@
 package org.grakovne.swiftbot.channels.telegram.notification
 
 import com.pengrad.telegrambot.TelegramBot
+import com.pengrad.telegrambot.model.request.ParseMode
 import com.pengrad.telegrambot.request.SendMessage
 import org.grakovne.swiftbot.channels.telegram.ConfigurationProperties
 import org.grakovne.swiftbot.events.core.Event
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class TelegramAlertNotificationSender(
     private val bot: TelegramBot,
-    private val configurationProperties: ConfigurationProperties
+    private val properties: ConfigurationProperties
 ) : EventListener {
     override fun acceptableEvents(): List<EventType> = listOf(EventType.LOG_SENT)
 
@@ -22,12 +23,13 @@ class TelegramAlertNotificationSender(
         }
     }
 
-    private fun processLoggingEvent(event: LoggingEvent) = bot.execute(SendMessage(configurationProperties.adminChat, event.toMessage()))
-}
+    private fun processLoggingEvent(event: LoggingEvent) =
+        bot.execute(SendMessage(properties.adminChat, event.toMessage()).parseMode(ParseMode.HTML))
 
-private fun LoggingEvent.toMessage(): String = """
-    <b>[Admin] Logging Event Occurred!</b>
+    private fun LoggingEvent.toMessage(): String = """
+    <i>[Admin] Logging Event Occurred!
     
-    <b>Status</b>: ${this.level}
-    <b>Message</b>: ${this.message}
+    Status: ${this.level}
+    Message: ${this.message}</i>
 """.trimIndent()
+}
