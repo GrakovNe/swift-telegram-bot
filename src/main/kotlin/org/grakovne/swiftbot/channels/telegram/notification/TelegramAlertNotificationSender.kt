@@ -7,6 +7,7 @@ import org.grakovne.swiftbot.channels.telegram.ConfigurationProperties
 import org.grakovne.swiftbot.events.core.Event
 import org.grakovne.swiftbot.events.core.EventListener
 import org.grakovne.swiftbot.events.core.EventType
+import org.grakovne.swiftbot.events.internal.LogLevel.Companion.isWorseOrEqualThan
 import org.grakovne.swiftbot.events.internal.LoggingEvent
 import org.springframework.stereotype.Service
 
@@ -23,8 +24,12 @@ class TelegramAlertNotificationSender(
         }
     }
 
-    private fun processLoggingEvent(event: LoggingEvent) =
-        bot.execute(SendMessage(properties.adminChat, event.toMessage()).parseMode(ParseMode.HTML))
+    private fun processLoggingEvent(event: LoggingEvent) {
+        if (event.level.isWorseOrEqualThan(properties.level)) {
+            bot.execute(SendMessage(properties.adminChat, event.toMessage()).parseMode(ParseMode.HTML))
+        }
+    }
+
 
     private fun LoggingEvent.toMessage(): String = """
     <i>[Admin] Logging Event Occurred!
