@@ -16,6 +16,13 @@ class UserReferenceService(private val userReferenceRepository: UserReferenceRep
         .orElseGet { emptySet() }
         .toList()
 
+    fun unsubscribeFromPayment(userId: String, paymentId: UUID, source: UserReferenceSource) =
+        userReferenceRepository
+            .findById(userId)
+            .orElseGet { createUser(userId, setOf(paymentId), source) }
+            .let { it.copy(subscribedPayments = it.subscribedPayments - paymentId) }
+            .let { userReferenceRepository.save(it) }
+
     fun subscribeToPayment(userId: String, paymentId: UUID, source: UserReferenceSource) =
         userReferenceRepository
             .findById(userId)
