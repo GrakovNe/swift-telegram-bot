@@ -20,7 +20,7 @@ class CheckSubscriptionsListCommand(
     override fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
         val isMessageSent = userReferenceService
             .fetchUserSubscription(update.message().chat().id().toString())
-            .fold("Subscriptions: \n\n") { acc, uuid -> acc + "UETR: $uuid" }
+            .fold("Subscriptions: \n\n") { acc, uuid -> acc + "UETR: $uuid\n" }
             .let { message -> bot.execute(SendMessage(update.message().chat().id(), message)) }
             .isOk
 
