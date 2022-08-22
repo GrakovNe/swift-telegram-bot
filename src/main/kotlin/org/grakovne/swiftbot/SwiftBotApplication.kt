@@ -9,5 +9,5 @@ import org.springframework.scheduling.annotation.EnableScheduling
 class SwiftBotApplication
 
 fun main(args: Array<String>) {
-	runApplication<SwiftBotApplication>(*args)
+    runApplication<SwiftBotApplication>(*args)
 }

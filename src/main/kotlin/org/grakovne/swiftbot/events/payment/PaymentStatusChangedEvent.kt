@@ -4,7 +4,7 @@ import org.grakovne.swiftbot.dto.PaymentStatus
 import org.grakovne.swiftbot.events.core.Event
 import org.grakovne.swiftbot.events.core.EventType
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 data class PaymentStatusChangedEvent(
     val id: UUID,

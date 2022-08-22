@@ -2,7 +2,7 @@ package org.grakovne.swiftbot.payment.cache.domain
 
 import org.grakovne.swiftbot.dto.PaymentStatus
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated

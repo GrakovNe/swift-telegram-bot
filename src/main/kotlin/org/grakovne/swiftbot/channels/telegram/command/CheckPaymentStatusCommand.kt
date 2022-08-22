@@ -9,8 +9,8 @@ import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
 import org.grakovne.swiftbot.common.converter.toMessage
 import org.grakovne.swiftbot.dto.PaymentView
 import org.grakovne.swiftbot.events.core.EventSender
-import org.grakovne.swiftbot.events.internal.LogLevel
 import org.grakovne.swiftbot.events.internal.LogLevel.DEBUG
+import org.grakovne.swiftbot.events.internal.LogLevel.WARN
 import org.grakovne.swiftbot.events.internal.LoggingEvent
 import org.grakovne.swiftbot.payment.synchronization.CommonSynchronizationError
 import org.grakovne.swiftbot.payment.synchronization.payment.PaymentService
@@ -58,7 +58,10 @@ class CheckPaymentStatusCommand(
             .map { }
             .mapLeft {
                 when (it) {
-                    is CommonSynchronizationError -> TelegramUpdateProcessingError.INTERNAL_ERROR
+                    is CommonSynchronizationError -> {
+                        eventSender.sendEvent(LoggingEvent(WARN, "Unable to track payment status due to ${it.message}"))
+                        TelegramUpdateProcessingError.INTERNAL_ERROR
+                    }
                 }
             }
     }

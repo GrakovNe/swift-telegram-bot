@@ -1,7 +1,7 @@
 package org.grakovne.swiftbot.payment.synchronization
 
-import org.grakovne.swiftbot.events.payment.PaymentCacheOutdatedEvent
 import org.grakovne.swiftbot.events.core.EventSender
+import org.grakovne.swiftbot.events.payment.PaymentCacheOutdatedEvent
 import org.grakovne.swiftbot.payment.cache.PaymentCacheService
 import org.grakovne.swiftbot.payment.synchronization.configuraion.PeriodicConfigurationProperties
 import org.springframework.scheduling.annotation.Scheduled

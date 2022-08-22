@@ -5,6 +5,9 @@ import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
 import com.pengrad.telegrambot.request.SendMessage
 import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
+import org.grakovne.swiftbot.events.core.EventSender
+import org.grakovne.swiftbot.events.internal.LogLevel
+import org.grakovne.swiftbot.events.internal.LoggingEvent
 import org.grakovne.swiftbot.user.UserReferenceService
 import org.grakovne.swiftbot.user.domain.UserReferenceSource
 import org.springframework.stereotype.Service
@@ -13,7 +16,8 @@ import java.util.regex.Pattern
 
 @Service
 class UnsubscribePaymentStatusCommand(
-    private val userReferenceService: UserReferenceService
+    private val userReferenceService: UserReferenceService,
+    private val eventSender: EventSender
 ) : TelegramOnMessageCommand {
 
     override fun getHelp(): String = "/unsubscribe <UETR> - Unsubscribes for a status changes notifications"
@@ -39,8 +43,24 @@ class UnsubscribePaymentStatusCommand(
         val isMessageSent = bot.execute(SendMessage(update.message().chat().id(), "Unsubscribed!")).isOk
 
         return when (isMessageSent) {
-            true -> Either.Right(Unit)
-            false -> Either.Left(TelegramUpdateProcessingError.RESPONSE_NOT_SENT)
+            true -> {
+                eventSender.sendEvent(
+                    LoggingEvent(
+                        LogLevel.DEBUG,
+                        "subscribed to payment id $paymentId status changes"
+                    )
+                )
+                Either.Right(Unit)
+            }
+            false -> {
+                eventSender.sendEvent(
+                    LoggingEvent(
+                        LogLevel.WARN,
+                        "Unable to unsubscribe user ${update.message().chat().id()} from payment $paymentId"
+                    )
+                )
+                Either.Left(TelegramUpdateProcessingError.RESPONSE_NOT_SENT)
+            }
         }
     }
 }

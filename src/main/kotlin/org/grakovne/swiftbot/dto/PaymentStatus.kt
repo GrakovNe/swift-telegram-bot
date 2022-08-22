@@ -1,7 +1,6 @@
 package org.grakovne.swiftbot.dto
 
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue
-import com.fasterxml.jackson.annotation.JsonFormat
 
 enum class PaymentStatus(val value: String) {
     CREDITED("ACCC"),

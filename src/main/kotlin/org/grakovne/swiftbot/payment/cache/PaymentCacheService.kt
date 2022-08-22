@@ -1,9 +1,9 @@
 package org.grakovne.swiftbot.payment.cache
 
 import arrow.core.Either
+import org.grakovne.swiftbot.dto.PaymentView
 import org.grakovne.swiftbot.payment.cache.domain.Payment
 import org.grakovne.swiftbot.payment.cache.repository.PaymentRepository
-import org.grakovne.swiftbot.dto.PaymentView
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*

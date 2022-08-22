@@ -4,7 +4,7 @@ import org.grakovne.swiftbot.payment.cache.domain.Payment
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
-interface PaymentRepository: JpaRepository<Payment, UUID> {
+interface PaymentRepository : JpaRepository<Payment, UUID> {
 
     fun findTopByOrderByLastModifiedAtDesc(): Payment?
 }

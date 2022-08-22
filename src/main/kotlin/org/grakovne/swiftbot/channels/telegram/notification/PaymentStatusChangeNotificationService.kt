@@ -4,18 +4,22 @@ import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.request.ParseMode
 import com.pengrad.telegrambot.request.SendMessage
 import org.grakovne.swiftbot.common.converter.toMessage
-import org.grakovne.swiftbot.events.payment.PaymentStatusChangedEvent
 import org.grakovne.swiftbot.events.core.Event
 import org.grakovne.swiftbot.events.core.EventListener
+import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.core.EventType
+import org.grakovne.swiftbot.events.internal.LogLevel
+import org.grakovne.swiftbot.events.internal.LoggingEvent
+import org.grakovne.swiftbot.events.payment.PaymentStatusChangedEvent
 import org.grakovne.swiftbot.user.UserReferenceService
 import org.grakovne.swiftbot.user.domain.UserReferenceSource
 import org.springframework.stereotype.Service
 
 @Service
 class PaymentStatusChangeNotificationService(
-    val userReferenceService: UserReferenceService,
-    val bot: TelegramBot
+    private val userReferenceService: UserReferenceService,
+    private val bot: TelegramBot,
+    private val eventSender: EventSender
 ) : EventListener {
 
     override fun acceptableEvents(): List<EventType> = listOf(EventType.PAYMENT_STATUS_CHANGED)
@@ -34,7 +38,14 @@ class PaymentStatusChangeNotificationService(
     }
 
     private fun sendNotification(chatId: String, event: PaymentStatusChangedEvent) =
-        bot.execute(SendMessage(chatId, event.toMessage()).parseMode(ParseMode.HTML))
+        bot.execute(SendMessage(chatId, event.toMessage()).parseMode(ParseMode.HTML)).also {
+            eventSender.sendEvent(
+                LoggingEvent(
+                    LogLevel.WARN,
+                    "Payment status change notification sent"
+                )
+            )
+        }
 
     private fun PaymentStatusChangedEvent.toMessage(): String {
         return """

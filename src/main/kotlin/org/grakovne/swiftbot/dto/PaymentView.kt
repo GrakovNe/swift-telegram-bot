@@ -1,7 +1,7 @@
 package org.grakovne.swiftbot.dto
 
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 data class PaymentView(
     val id: UUID,
