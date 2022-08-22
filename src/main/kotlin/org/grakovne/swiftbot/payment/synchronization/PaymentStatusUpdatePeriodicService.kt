@@ -7,7 +7,7 @@ import org.grakovne.swiftbot.payment.synchronization.configuraion.PeriodicConfig
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.Duration
-import java.time.Instant
+import java.time.Instant.now
 
 @Service
 class PaymentStatusUpdatePeriodicService(
@@ -21,12 +21,10 @@ class PaymentStatusUpdatePeriodicService(
         val oldestPayment = paymentCacheService.fetchOldestCached()
         oldestPayment
             ?.takeIf {
-                it.lastModifiedAt.isBefore(
-                    Instant.now().minus(Duration.ofMinutes(configurationProperties.paymentCacheTtlMinutes))
-                )
+                val duration = Duration.ofMinutes(configurationProperties.paymentCacheTtlMinutes)
+                it.lastModifiedAt.plus(duration).isBefore(now())
             }
+            ?.let { paymentCacheService.updateLastUpdateDateTime(it.id, now()) }
             ?.let { eventSender.sendEvent(PaymentCacheOutdatedEvent(it.id, it.status)) }
-
-        oldestPayment?.let { paymentCacheService.updateLastUpdateDateTime(it.id, Instant.now()) }
     }
 }
