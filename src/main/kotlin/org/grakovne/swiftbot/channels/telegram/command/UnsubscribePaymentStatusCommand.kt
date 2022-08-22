@@ -16,6 +16,7 @@ class UnsubscribePaymentStatusCommand(
     private val userReferenceService: UserReferenceService
 ) : TelegramOnMessageCommand {
 
+    override fun getHelp(): String = "/unsubscribe <UETR> - Unsubscribes for a status changes notifications"
     override fun isCommandAcceptable(update: Update): Boolean = update.message().text().startsWith("/unsubscribe")
 
     override fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
@@ -23,7 +24,7 @@ class UnsubscribePaymentStatusCommand(
         val matcher = pattern.matcher(update.message().text())
 
         if (!matcher.find()) {
-            bot.execute(SendMessage(update.message().chat().id(), "UETR not found"))
+            bot.execute(SendMessage(update.message().chat().id(), "UETR required but not sent"))
             return Either.Left(TelegramUpdateProcessingError.INVALID_REQUEST)
         }
 

@@ -24,6 +24,9 @@ class CheckPaymentStatusCommand(
     private val paymentService: PaymentService,
     private val userReferenceService: UserReferenceService
 ) : TelegramOnMessageCommand {
+
+    override fun getHelp(): String = "/check <UETR> - Checks Current payment status and subscribes for a changes"
+
     override fun isCommandAcceptable(update: Update): Boolean = update.message().text().startsWith("/check")
 
     override fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
@@ -31,7 +34,7 @@ class CheckPaymentStatusCommand(
         val matcher = pattern.matcher(update.message().text())
 
         if (!matcher.find()) {
-            bot.execute(SendMessage(update.message().chat().id(), "UETR not found"))
+            bot.execute(SendMessage(update.message().chat().id(), "UETR required but not sent"))
             return Either.Left(TelegramUpdateProcessingError.INVALID_REQUEST)
         }
 

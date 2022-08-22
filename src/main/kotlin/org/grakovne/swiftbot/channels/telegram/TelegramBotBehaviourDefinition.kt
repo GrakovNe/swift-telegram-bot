@@ -1,22 +1,27 @@
 package org.grakovne.swiftbot.channels.telegram
 
-import arrow.core.Either
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.UpdatesListener
+import org.grakovne.swiftbot.channels.telegram.command.SendHelpMessageCommand
 import org.grakovne.swiftbot.channels.telegram.command.TelegramOnMessageCommand
 import org.springframework.stereotype.Service
 
 
 @Service
-class TelegramBotBehaviourDefinition(bot: TelegramBot, commands: List<TelegramOnMessageCommand>) {
+class TelegramBotBehaviourDefinition(
+    bot: TelegramBot,
+    helpMessageCommand: SendHelpMessageCommand,
+    onMessageCommands: List<TelegramOnMessageCommand>
+) {
 
     init {
         bot.setUpdatesListener {
             it
-                .flatMap { update ->
-                    commands
-                        .filter { command -> command.isCommandAcceptable(update) }
-                        .map { command -> command.processUpdate(bot, update) }
+                .map { update ->
+                    onMessageCommands
+                        .find { command -> command.isCommandAcceptable(update) }
+                        ?.processUpdate(bot, update)
+                        ?: helpMessageCommand.sendHelp(bot, update)
                 }
 
             UpdatesListener.CONFIRMED_UPDATES_ALL

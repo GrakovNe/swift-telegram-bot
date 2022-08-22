@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service
 class CheckSubscriptionsListCommand(
     private val userReferenceService: UserReferenceService
 ) : TelegramOnMessageCommand {
+
+    override fun getHelp(): String = "/subscriptions - Shows list of subscriptions"
     override fun isCommandAcceptable(update: Update): Boolean = update.message().text().startsWith("/subscriptions")
 
     override fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
