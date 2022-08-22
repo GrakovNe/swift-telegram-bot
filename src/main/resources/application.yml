@@ -8,3 +8,9 @@ spring:
     username: swift_app
     password: swift_app
     driverClassName: org.postgresql.Driver
+
+periodic:
+  payment-cache-ttl-minutes: 30
+
+telegram:
+  token: 5541027338:AAHJoufyp82lT5AAh0Yu2SQyk43hfW-7dZ8

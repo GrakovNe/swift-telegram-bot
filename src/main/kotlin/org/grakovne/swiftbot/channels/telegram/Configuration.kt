@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 
 @Component
-class Configuration {
+class Configuration(private val properties: ConfigurationProperties) {
 
     @Bean
-    fun telegramBotService(): TelegramBot = Builder("5541027338:AAHJoufyp82lT5AAh0Yu2SQyk43hfW-7dZ8").build()
+    fun telegramBotService(): TelegramBot = Builder(properties.token).build()
 }

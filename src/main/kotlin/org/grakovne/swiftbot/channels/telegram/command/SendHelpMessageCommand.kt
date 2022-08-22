@@ -2,6 +2,7 @@ package org.grakovne.swiftbot.channels.telegram.command
 
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
+import com.pengrad.telegrambot.model.request.ParseMode
 import com.pengrad.telegrambot.request.SendMessage
 import org.springframework.stereotype.Service
 
@@ -12,18 +13,21 @@ class SendHelpMessageCommand(private val onMessageCommands: List<TelegramOnMessa
         val header = """
             Unofficial SWIFT GPI Payments Tracker
             
-            Author: @max_grakov
+            Author: @maxgrakov
             
             Available Commands:
+            
             
         """.trimIndent()
 
         val footer = """
+            
             Please feel free to use this bot carefully
         """.trimIndent()
 
         val message = onMessageCommands
-            .map { it.getHelp() }.fold(header) { acc, help -> acc + help + "\n" }
+            .map { it.getHelp() }
+            .fold(header) { acc, help -> acc + help + "\n" }
             .let { it + footer }
 
         bot.execute(SendMessage(update.message().chat().id(), message)).isOk
