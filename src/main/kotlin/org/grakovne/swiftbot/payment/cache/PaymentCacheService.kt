@@ -22,7 +22,7 @@ class PaymentCacheService(private val paymentRepository: PaymentRepository) {
 
     fun storePayment(dto: PaymentView) = dto.toPayment().let { paymentRepository.save(it) }
 
-    fun updateLastUpdateDateTime(id: UUID, now: Instant) = paymentRepository
+    fun updateLastModifiedAt(id: UUID, now: Instant) = paymentRepository
         .findById(id)
         .orElseGet { null }
         ?.copy(lastModifiedAt = now)

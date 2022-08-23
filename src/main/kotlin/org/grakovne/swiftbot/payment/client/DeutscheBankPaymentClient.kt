@@ -25,7 +25,7 @@ class DeutscheBankPaymentClient(private val restTemplate: RestTemplate) {
                 it.body
                     ?.asCommon()
                     ?.let { status -> Either.Right(status) }
-                    ?: Either.Left("Unable to find payment status")
+                    ?: Either.Left("Unable to find payment status. Response body is: ${it.body.toString()}")
             }
             .mapLeft { "Third-party service responded with error status: $it" }
     }

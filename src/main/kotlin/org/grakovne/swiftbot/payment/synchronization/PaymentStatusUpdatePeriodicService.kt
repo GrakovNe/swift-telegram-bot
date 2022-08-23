@@ -24,7 +24,7 @@ class PaymentStatusUpdatePeriodicService(
                 val duration = Duration.ofMinutes(configurationProperties.paymentCacheTtlMinutes)
                 it.lastModifiedAt.plus(duration).isBefore(now())
             }
-            ?.let { paymentCacheService.updateLastUpdateDateTime(it.id, now()) }
-            ?.let { eventSender.sendEvent(PaymentCacheOutdatedEvent(it.id, it.status)) }
+            ?.let { paymentCacheService.updateLastModifiedAt(it.id, now()) }
+            ?.let { eventSender.sendEvent(PaymentCacheOutdatedEvent(it.id, it.status, it.paymentLastUpdateAt)) }
     }
 }
