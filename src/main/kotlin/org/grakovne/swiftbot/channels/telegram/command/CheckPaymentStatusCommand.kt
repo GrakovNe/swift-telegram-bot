@@ -59,7 +59,14 @@ class CheckPaymentStatusCommand(
             .mapLeft {
                 when (it) {
                     is CommonSynchronizationError -> {
-                        eventSender.sendEvent(LoggingEvent(WARN, "Unable to track payment status due to ${it.message}"))
+                        eventSender.sendEvent(
+                            LoggingEvent(
+                                WARN,
+                                "Unable to track payment status due to ${it.message} source user's message is: ${
+                                    update.message().text()
+                                }"
+                            )
+                        )
                         TelegramUpdateProcessingError.INTERNAL_ERROR
                     }
                 }
