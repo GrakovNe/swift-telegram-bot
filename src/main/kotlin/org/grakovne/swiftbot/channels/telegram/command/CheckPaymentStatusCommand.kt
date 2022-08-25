@@ -86,7 +86,7 @@ class CheckPaymentStatusCommand(
             <b>Current status</b>: ${this.status}
             <b>Last update</b>: ${this.lastUpdateTimestamp.toMessage()}
             
-            now you're subscribed to payment updates!
+            now you're subscribed to payment updates
         """.trimIndent()
     }
 

@@ -46,7 +46,7 @@ class SubscribePaymentStatusCommand(
             UserReferenceSource.TELEGRAM
         )
 
-        val isMessageSent = bot.execute(SendMessage(update.message().chat().id(), "Subscribed!")).isOk
+        val isMessageSent = bot.execute(SendMessage(update.message().chat().id(), "Subscribed")).isOk
 
         return when (isMessageSent) {
             true -> {

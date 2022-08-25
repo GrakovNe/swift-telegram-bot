@@ -50,7 +50,7 @@ class PaymentLastUpdateDateChangeNotificationService(
 
     private fun PaymentLastUpdatedChangedEvent.toMessage(): String {
         return """
-            Payment was in processing but status didn't change
+            Payment was under processing but status didn't change
             
             <b>UETR</b>: ${this.id}
             

@@ -40,14 +40,14 @@ class UnsubscribePaymentStatusCommand(
             UserReferenceSource.TELEGRAM
         )
 
-        val isMessageSent = bot.execute(SendMessage(update.message().chat().id(), "Unsubscribed!")).isOk
+        val isMessageSent = bot.execute(SendMessage(update.message().chat().id(), "Unsubscribed")).isOk
 
         return when (isMessageSent) {
             true -> {
                 eventSender.sendEvent(
                     LoggingEvent(
                         LogLevel.DEBUG,
-                        "subscribed to payment id $paymentId status changes"
+                        "unsubscribed from payment id $paymentId status changes"
                     )
                 )
                 Either.Right(Unit)
