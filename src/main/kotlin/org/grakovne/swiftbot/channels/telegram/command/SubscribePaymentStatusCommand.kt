@@ -29,10 +29,12 @@ class SubscribePaymentStatusCommand(
         val matcher = pattern.matcher(update.message().text())
 
         if (!matcher.find()) {
-            SendMessage(
-                update.message().chat().id(),
-                "Please provide valid UETR\n\n<b>Example</b>: <i>/check 1b5c013c-8601-46ba-a982-e88848140329</i>"
-            ).parseMode(ParseMode.HTML)
+            bot.execute(
+                SendMessage(
+                    update.message().chat().id(),
+                    "Please provide valid UETR\n\n<b>Example</b>: <i>/subscribe 1b5c013c-8601-46ba-a982-e88848140329</i>"
+                ).parseMode(ParseMode.HTML)
+            )
             return Either.Left(TelegramUpdateProcessingError.INVALID_REQUEST)
         }
 
