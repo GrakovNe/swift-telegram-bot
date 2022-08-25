@@ -28,14 +28,19 @@ class CheckPaymentStatusCommand(
 ) : TelegramOnMessageCommand {
 
     override fun getKey(): String = "/check"
-    override fun getHelp(): String = "/check <UETR> - Checks Current payment status and subscribes for a changes"
+    override fun getHelp(): String = "/check <UETR> - Checks current payment status and subscribes for a changes"
 
-    override fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
+    override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
         val pattern = Pattern.compile("[a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}")
         val matcher = pattern.matcher(update.message().text())
 
         if (!matcher.find()) {
-            bot.execute(SendMessage(update.message().chat().id(), "UETR required but not sent"))
+            bot.execute(
+                SendMessage(
+                    update.message().chat().id(),
+                    "Please provide valid UETR\n\n<b>Example</b>: <i>/check 1b5c013c-8601-46ba-a982-e88848140329</i>"
+                ).parseMode(ParseMode.HTML)
+            )
             return Either.Left(TelegramUpdateProcessingError.INVALID_REQUEST)
         }
 
@@ -80,6 +85,8 @@ class CheckPaymentStatusCommand(
             
             <b>Current status</b>: ${this.status}
             <b>Last update</b>: ${this.lastUpdateTimestamp.toMessage()}
+            
+            now you're subscribed to payment updates!
         """.trimIndent()
     }
 

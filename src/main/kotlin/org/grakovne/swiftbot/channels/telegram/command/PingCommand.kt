@@ -11,11 +11,20 @@ import org.springframework.stereotype.Service
 class PingCommand : TelegramOnMessageCommand {
 
     override fun getKey(): String = "/ping"
-    override fun getHelp(): String = "/ping - Send dummy text"
+    override fun getHelp(): String = "/ping - just sends text"
 
-    override fun processUpdate(bot: TelegramBot, update: Update) =
-        when (bot.execute(SendMessage(update.message().chat().id(), "pong")).isOk) {
+    override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
+        val isMessageSent = bot
+            .execute(
+                SendMessage(
+                    update.message().chat().id(),
+                    "The quick brown fox jumps over the lazy dog"
+                )
+            ).isOk
+
+        return when (isMessageSent) {
             true -> Either.Right(Unit)
             false -> Either.Left(TelegramUpdateProcessingError.RESPONSE_NOT_SENT)
         }
+    }
 }

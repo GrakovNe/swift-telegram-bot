@@ -49,7 +49,7 @@ class PaymentStatusChangeNotificationService(
 
     private fun PaymentStatusChangedEvent.toMessage(): String {
         return """
-            Payment status has been changed
+            Payment status changed
             
             <b>UETR</b>: ${this.id}
             

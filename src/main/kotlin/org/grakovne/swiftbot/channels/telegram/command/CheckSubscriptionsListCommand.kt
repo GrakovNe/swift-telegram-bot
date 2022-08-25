@@ -17,7 +17,7 @@ class CheckSubscriptionsListCommand(
     override fun getKey(): String = "/subscriptions"
     override fun getHelp(): String = "/subscriptions - Shows list of subscriptions"
 
-    override fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
+    override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
         val isMessageSent = userReferenceService
             .fetchUserSubscription(update.message().chat().id().toString())
             .fold("Subscriptions: \n\n") { acc, uuid -> acc + "UETR: $uuid\n" }

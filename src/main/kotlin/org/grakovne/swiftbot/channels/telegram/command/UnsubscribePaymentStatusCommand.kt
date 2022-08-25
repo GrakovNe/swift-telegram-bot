@@ -23,7 +23,7 @@ class UnsubscribePaymentStatusCommand(
     override fun getKey(): String = "/unsubscribe"
     override fun getHelp(): String = "/unsubscribe <UETR> - Unsubscribes for a status changes notifications"
 
-    override fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
+    override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
         val pattern = Pattern.compile("[a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}")
         val matcher = pattern.matcher(update.message().text())
 

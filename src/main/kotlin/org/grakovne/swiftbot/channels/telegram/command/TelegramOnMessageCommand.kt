@@ -8,10 +8,8 @@ import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
 interface TelegramOnMessageCommand {
 
     fun getKey(): String
-
     fun getHelp(): String
 
-    fun isCommandAcceptable(update: Update): Boolean = update.message().text().startsWith(getKey())
-
-    fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit>
+    fun isAcceptable(update: Update): Boolean = update.message().text().startsWith(getKey())
+    fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit>
 }

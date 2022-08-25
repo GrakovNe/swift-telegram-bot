@@ -13,7 +13,7 @@ class SendHelpMessageCommand(private val onMessageCommands: List<TelegramOnMessa
     override fun getKey(): String = "/help"
     override fun getHelp() = "Prints help"
 
-    override fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
+    override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
         val isMessageSent = bot.execute(SendMessage(update.message().chat().id(), buildHelp())).isOk
 
         return when (isMessageSent) {

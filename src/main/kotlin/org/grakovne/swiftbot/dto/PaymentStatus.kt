@@ -17,5 +17,6 @@ enum class PaymentStatus(val value: String) {
 
     companion object {
         fun fromString(value: String): PaymentStatus? = values().find { it.value == value }
+        fun PaymentStatus.isTerminal(): Boolean = listOf(CREDITED, REJECTED).contains(this)
     }
 }
