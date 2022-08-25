@@ -20,10 +20,8 @@ class SubscribePaymentStatusCommand(
     private val eventSender: EventSender
 ) : TelegramOnMessageCommand {
 
-
+    override fun getKey(): String = "/subscribe"
     override fun getHelp(): String = "/subscribe <UETR> - Subscribes for a status changes notifications"
-
-    override fun isCommandAcceptable(update: Update): Boolean = update.message().text().startsWith("/subscribe")
 
     override fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
         val pattern = Pattern.compile("[a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}")

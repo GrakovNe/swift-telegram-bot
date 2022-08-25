@@ -14,8 +14,8 @@ class CheckSubscriptionsListCommand(
     private val userReferenceService: UserReferenceService
 ) : TelegramOnMessageCommand {
 
+    override fun getKey(): String = "/subscriptions"
     override fun getHelp(): String = "/subscriptions - Shows list of subscriptions"
-    override fun isCommandAcceptable(update: Update): Boolean = update.message().text().startsWith("/subscriptions")
 
     override fun processUpdate(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
         val isMessageSent = userReferenceService
