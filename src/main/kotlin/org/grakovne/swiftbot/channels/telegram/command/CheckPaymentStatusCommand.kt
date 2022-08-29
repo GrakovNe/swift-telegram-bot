@@ -63,6 +63,13 @@ class CheckPaymentStatusCommand(
             .mapLeft {
                 when (it) {
                     is CommonSynchronizationError -> {
+                        bot.execute(
+                            SendMessage(
+                                update.message().chat().id(),
+                                "Unable to find payment by UETR. Please try check UETR and try again\n\n<i>" +
+                                        "Please, note that payments older 3 months may not be tracked</i>"
+                            ).parseMode(ParseMode.HTML)
+                        )
                         eventSender.sendEvent(
                             LoggingEvent(
                                 WARN,
