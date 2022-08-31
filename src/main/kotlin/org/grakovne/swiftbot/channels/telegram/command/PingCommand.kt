@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service
 @Service
 class PingCommand : TelegramOnMessageCommand {
 
-    override fun getKey(): String = "/ping"
-    override fun getHelp(): String = "/ping - Sends dummy text"
+    override fun getKey(): String = "ping"
+    override fun getHelp(): String = "Sends dummy text"
 
     override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
         val isMessageSent = bot

@@ -1,6 +1,5 @@
 package org.grakovne.swiftbot.payment.synchronization
 
-import org.grakovne.swiftbot.dto.PaymentStatus.Companion.isTerminal
 import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.payment.PaymentCacheOutdatedEvent
 import org.grakovne.swiftbot.payment.cache.PaymentCacheService
@@ -17,10 +16,10 @@ class PaymentStatusUpdatePeriodicService(
     private val configurationProperties: PeriodicConfigurationProperties
 ) {
 
-    @Scheduled(fixedDelay = 60_000)
+    @Scheduled(fixedDelay = 1000)
     fun checkOldestCachedPayment() {
         paymentCacheService
-            .fetchOldestCached()
+            .fetchOldestProcessing()
             ?.takeIf {
                 val duration = Duration.ofMinutes(configurationProperties.paymentCacheTtlMinutes)
                 it.lastModifiedAt.plus(duration).isBefore(now())

@@ -9,7 +9,8 @@ interface TelegramOnMessageCommand {
 
     fun getKey(): String
     fun getHelp(): String
+    fun getArguments(): String = ""
 
-    fun isAcceptable(update: Update): Boolean = update.message().text().startsWith(getKey())
+    fun isAcceptable(update: Update): Boolean = update.message().text().startsWith("/" + getKey())
     fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit>
 }

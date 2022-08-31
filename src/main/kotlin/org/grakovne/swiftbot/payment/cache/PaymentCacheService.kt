@@ -1,9 +1,11 @@
 package org.grakovne.swiftbot.payment.cache
 
 import arrow.core.Either
+import org.grakovne.swiftbot.dto.PaymentStatus
 import org.grakovne.swiftbot.dto.PaymentView
 import org.grakovne.swiftbot.payment.cache.domain.Payment
 import org.grakovne.swiftbot.payment.cache.repository.PaymentRepository
+import org.grakovne.swiftbot.payment.synchronization.PaymentError
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*
@@ -11,7 +13,16 @@ import java.util.*
 @Service
 class PaymentCacheService(private val paymentRepository: PaymentRepository) {
 
-    fun fetchOldestCached() = paymentRepository.findTopByOrderByLastModifiedAtAsc()
+    fun countTotal(): Long = paymentRepository.countByStatusIn(PaymentStatus.values().toList())
+
+    fun countSuccessful(): Long = paymentRepository.countByStatusIn(PaymentStatus.successStatues())
+
+    fun countProcessing(): Long = paymentRepository.countByStatusIn(PaymentStatus.processingStatuses())
+
+    fun countFailed(): Long = paymentRepository.countByStatusIn(PaymentStatus.failedStatues())
+
+    fun fetchOldestProcessing() =
+        paymentRepository.findFirstByStatusInOrderByLastModifiedAtAsc(PaymentStatus.processingStatuses())
 
     fun fetchCached(id: UUID): Either<CacheError, PaymentView> = paymentRepository
         .findById(id)

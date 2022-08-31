@@ -17,6 +17,15 @@ enum class PaymentStatus(val value: String) {
 
     companion object {
         fun fromString(value: String): PaymentStatus? = values().find { it.value == value }
-        fun PaymentStatus.isTerminal(): Boolean = listOf(CREDITED, REJECTED).contains(this)
+        fun successStatues(): List<PaymentStatus> = listOf(CREDITED)
+        fun failedStatues(): List<PaymentStatus> = listOf(REJECTED)
+        fun processingStatuses(): List<PaymentStatus> = listOf(
+            PROCESSING,
+            SENT_TO_GPI_BANK,
+            SENT_TO_NON_GPI_BANK,
+            PENDING_CREDIT,
+            CREDITED_FOR_ACCOUNT_CLARIFICATION,
+            COVERAGE_WAITING
+        )
     }
 }
