@@ -31,8 +31,14 @@ class CheckPaymentStatusCommand(
     override fun getArguments() = "<UETR>"
     override fun getHelp(): String = "Checks current payment status and subscribes for a changes"
 
+    override fun isAcceptable(update: Update): Boolean {
+        val isStartsFromKey = update.message().text().startsWith("/" + getKey())
+        val isStartsFromPaymentId = pattern.matcher(update.message().text()).find()
+
+        return isStartsFromPaymentId || isStartsFromKey
+    }
+
     override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
-        val pattern = Pattern.compile("[a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}")
         val matcher = pattern.matcher(update.message().text())
 
         if (!matcher.find()) {
@@ -96,6 +102,10 @@ class CheckPaymentStatusCommand(
             
             now you're subscribed to payment updates
         """.trimIndent()
+    }
+
+    companion object {
+        private val pattern = Pattern.compile("[a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}")
     }
 
 }
