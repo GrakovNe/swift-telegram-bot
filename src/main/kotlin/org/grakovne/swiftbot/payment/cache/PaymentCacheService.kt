@@ -5,13 +5,17 @@ import org.grakovne.swiftbot.dto.PaymentStatus
 import org.grakovne.swiftbot.dto.PaymentView
 import org.grakovne.swiftbot.payment.cache.domain.Payment
 import org.grakovne.swiftbot.payment.cache.repository.PaymentRepository
+import org.grakovne.swiftbot.payment.metrics.PaymentReportService
 import org.grakovne.swiftbot.payment.synchronization.PaymentError
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*
 
 @Service
-class PaymentCacheService(private val paymentRepository: PaymentRepository) {
+class PaymentCacheService(
+    private val paymentRepository: PaymentRepository,
+    private val paymentReportService: PaymentReportService
+) {
 
     fun countTotal(): Long = paymentRepository.countByStatusIn(PaymentStatus.values().toList())
 
@@ -31,13 +35,23 @@ class PaymentCacheService(private val paymentRepository: PaymentRepository) {
         ?.let { Either.Right(it) }
         ?: Either.Left(NotFound(id))
 
-    fun storePayment(dto: PaymentView) = dto.toPayment().let { paymentRepository.save(it) }
+    fun storePayment(dto: PaymentView) = dto
+        .toPayment()
+        .let {
+            val payment = paymentRepository.save(it)
+            paymentReportService.createReportEntry(payment)
+        }
 
     fun updateLastModifiedAt(id: UUID, now: Instant) = paymentRepository
         .findById(id)
         .orElseGet { null }
         ?.copy(lastModifiedAt = now)
-        ?.let { paymentRepository.save(it) }
+        ?.let {
+            val payment = paymentRepository.save(it)
+            paymentReportService.createReportEntry(payment)
+
+            payment
+        }
 }
 
 private fun PaymentView.toPayment(): Payment {
