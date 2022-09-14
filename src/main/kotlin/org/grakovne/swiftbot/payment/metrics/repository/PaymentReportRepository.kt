@@ -6,5 +6,6 @@ import java.util.*
 
 interface PaymentReportRepository : JpaRepository<PaymentReport, UUID> {
 
+    fun findByPaymentIdOrderByCreatedAtDesc(paymentId: UUID): List<PaymentReport>
     fun findFirstByPaymentIdOrderByCreatedAtDesc(paymentId: UUID): PaymentReport?
 }

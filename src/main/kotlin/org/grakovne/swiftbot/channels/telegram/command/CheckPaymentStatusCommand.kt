@@ -1,6 +1,7 @@
 package org.grakovne.swiftbot.channels.telegram.command
 
 import arrow.core.Either
+import arrow.core.tail
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
 import com.pengrad.telegrambot.model.request.ParseMode
@@ -12,6 +13,7 @@ import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.internal.LogLevel.DEBUG
 import org.grakovne.swiftbot.events.internal.LogLevel.WARN
 import org.grakovne.swiftbot.events.internal.LoggingEvent
+import org.grakovne.swiftbot.payment.metrics.PaymentReportService
 import org.grakovne.swiftbot.payment.synchronization.CommonSynchronizationError
 import org.grakovne.swiftbot.payment.synchronization.payment.PaymentService
 import org.grakovne.swiftbot.user.UserReferenceService
@@ -23,6 +25,7 @@ import java.util.regex.Pattern
 @Service
 class CheckPaymentStatusCommand(
     private val paymentService: PaymentService,
+    private val paymentReportService: PaymentReportService,
     private val userReferenceService: UserReferenceService,
     private val eventSender: EventSender
 ) : TelegramOnMessageCommand {
@@ -99,9 +102,25 @@ class CheckPaymentStatusCommand(
             
             <b>Current status</b>: ${this.status}
             <b>Last update</b>: ${this.lastUpdateTimestamp.toMessage()}
-            
+            ${if (paymentReportService.fetchEntries(this.id).size > 1) this.toHistory() else ""}
             now you're subscribed to payment updates
         """.trimIndent()
+    }
+
+    private fun PaymentView.toHistory(): String {
+        val history = paymentReportService
+            .fetchEntries(this.id)
+            .tail()
+            .joinToString(separator = "") {
+                """
+            <b>Time</b>: ${it.timestamp.toMessage()}
+            <b>Status</b>: ${it.newStatus}"""
+            }
+
+        return """
+            Previous updates:
+            $history
+        """
     }
 
     companion object {

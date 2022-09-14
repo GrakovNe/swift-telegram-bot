@@ -10,6 +10,8 @@ import java.util.*
 @Service
 class PaymentReportService(private val repository: PaymentReportRepository) {
 
+    fun fetchEntries(uetr: UUID) = repository.findByPaymentIdOrderByCreatedAtDesc(uetr)
+
     fun createReportEntry(payment: Payment): PaymentReport {
         val latestReport = repository.findFirstByPaymentIdOrderByCreatedAtDesc(payment.id) ?: createEntry(payment)
 
