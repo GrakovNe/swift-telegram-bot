@@ -113,13 +113,13 @@ class CheckPaymentStatusCommand(
             .tail()
             .joinToString(separator = "") {
                 """
+                    
             <b>Time</b>: ${it.timestamp.toMessage()}
             <b>Status</b>: ${it.newStatus}"""
             }
 
         return """
-            Previous updates:
-            $history
+            Previous updates:$history
         """
     }
 
