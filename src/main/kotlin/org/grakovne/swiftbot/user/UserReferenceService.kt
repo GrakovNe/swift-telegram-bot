@@ -35,10 +35,11 @@ class UserReferenceService(private val userReferenceRepository: UserReferenceRep
             .let { it.copy(subscribedPayments = it.subscribedPayments + paymentId) }
             .let { userReferenceRepository.save(it) }
 
+    fun fetchUser(userId: String, source: UserReferenceSource): UserReference = userReferenceRepository
+        .findById(userId)
+        .orElseGet { createUser(userId, setOf(), source) }
 
-    fun updateUser(request: UserView) = request.toUser().let { userReferenceRepository.save(it) }
-
-    fun createUser(
+    private fun createUser(
         id: String,
         subscribedPayments: Set<UUID>,
         source: UserReferenceSource,

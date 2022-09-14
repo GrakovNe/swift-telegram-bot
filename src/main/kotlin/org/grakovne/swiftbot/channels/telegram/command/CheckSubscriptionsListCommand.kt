@@ -9,7 +9,6 @@ import org.grakovne.swiftbot.user.UserReferenceService
 import org.springframework.stereotype.Service
 
 @Service
-
 class CheckSubscriptionsListCommand(
     private val userReferenceService: UserReferenceService
 ) : TelegramOnMessageCommand {
