@@ -1,6 +1,5 @@
 package org.grakovne.swiftbot.user
 
-import org.grakovne.swiftbot.dto.UserView
 import org.grakovne.swiftbot.user.domain.UserReference
 import org.grakovne.swiftbot.user.domain.UserReferenceSource
 import org.grakovne.swiftbot.user.repository.UserReferenceRepository
@@ -21,37 +20,33 @@ class UserReferenceService(private val userReferenceRepository: UserReferenceRep
         .orElseGet { emptySet() }
         .toList()
 
-    fun unsubscribeFromPayment(userId: String, paymentId: UUID, source: UserReferenceSource) =
-        userReferenceRepository
-            .findById(userId)
-            .orElseGet { createUser(userId, setOf(paymentId), source) }
+    fun unsubscribeFromPayment(user: UserReference, paymentId: UUID) =
+        user
             .let { it.copy(subscribedPayments = it.subscribedPayments - paymentId) }
             .let { userReferenceRepository.save(it) }
 
-    fun subscribeToPayment(userId: String, paymentId: UUID, source: UserReferenceSource) =
-        userReferenceRepository
-            .findById(userId)
-            .orElseGet { createUser(userId, setOf(paymentId), source) }
+    fun subscribeToPayment(user: UserReference, paymentId: UUID) =
+        user
             .let { it.copy(subscribedPayments = it.subscribedPayments + paymentId) }
             .let { userReferenceRepository.save(it) }
 
-    fun fetchUser(userId: String, source: UserReferenceSource): UserReference = userReferenceRepository
-        .findById(userId)
-        .orElseGet { createUser(userId, setOf(), source) }
+    fun fetchUser(userId: String, source: UserReferenceSource, language: String): UserReference =
+        userReferenceRepository
+            .findById(userId)
+            .orElseGet { createUser(userId, setOf(), source, language) }
+            .copy(language = language)
+            .let { createUser(it.id, it.subscribedPayments, it.source, it.language ?: "en") }
+
 
     private fun createUser(
         id: String,
         subscribedPayments: Set<UUID>,
         source: UserReferenceSource,
+        language: String
     ): UserReference = UserReference(
         id = id,
         subscribedPayments = subscribedPayments,
-        source = source
+        source = source,
+        language = language
     ).let { userReferenceRepository.save(it) }
 }
-
-private fun UserView.toUser(): UserReference = UserReference(
-    id = this.id,
-    source = this.channel,
-    subscribedPayments = this.subscribedPayments
-)

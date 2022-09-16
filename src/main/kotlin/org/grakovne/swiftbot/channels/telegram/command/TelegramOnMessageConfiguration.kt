@@ -10,15 +10,18 @@ import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
 import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.internal.LogLevel.WARN
 import org.grakovne.swiftbot.events.internal.LoggingEvent
+import org.grakovne.swiftbot.user.UserReferenceService
+import org.grakovne.swiftbot.user.domain.UserReferenceSource
 import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
 
 @Service
 class TelegramOnMessageConfiguration(
     private val bot: TelegramBot,
-    private val unknownCommand: SendHelpMessageCommand,
+    private val unknownCommandProcessor: UnknownMessageCommandProcessingService,
     private val commands: List<TelegramOnMessageCommand>,
-    private val eventSender: EventSender
+    private val eventSender: EventSender,
+    private val userReferenceService: UserReferenceService
 ) {
 
     @PostConstruct
@@ -34,9 +37,15 @@ class TelegramOnMessageConfiguration(
             .forEach { update -> onMessage(update) }
 
     private fun onMessage(update: Update) = try {
+        val user = userReferenceService.fetchUser(
+            userId = update.message().chat().id().toString(),
+            source = UserReferenceSource.TELEGRAM,
+            language = update.message().from().languageCode()
+        )
+
         update
             .findCommand()
-            .accept(bot, update)
+            .accept(bot, update, user)
             .tap { bot.execute(SetMyCommands(*commandsDescription)) }
     } catch (ex: Exception) {
         eventSender.sendEvent(LoggingEvent(WARN, "Internal Exception. Message = ${ex.message}"))
@@ -46,7 +55,7 @@ class TelegramOnMessageConfiguration(
     private fun Update.findCommand() =
         commands
             .find { command -> command.isAcceptable(this) }
-            ?: unknownCommand
+            ?: unknownCommandProcessor.findCommand(this)
 
     private fun Update.hasSender() = this.message()?.chat()?.id() != null
     private val commandsDescription = commands.map { BotCommand(it.getKey(), it.getHelp()) }.toTypedArray()

@@ -9,7 +9,7 @@ import javax.persistence.Enumerated
 import javax.persistence.Id
 
 @Entity
-data class PaymentReport (
+data class PaymentReport(
     @Id
     val id: UUID,
     val paymentId: UUID,

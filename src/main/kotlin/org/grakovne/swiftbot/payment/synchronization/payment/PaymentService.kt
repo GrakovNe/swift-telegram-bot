@@ -2,7 +2,6 @@ package org.grakovne.swiftbot.payment.synchronization.payment
 
 import arrow.core.Either
 import arrow.core.sequence
-import org.grakovne.swiftbot.dto.PaymentStatus
 import org.grakovne.swiftbot.dto.PaymentView
 import org.grakovne.swiftbot.payment.cache.PaymentCacheService
 import org.grakovne.swiftbot.payment.synchronization.PaymentError

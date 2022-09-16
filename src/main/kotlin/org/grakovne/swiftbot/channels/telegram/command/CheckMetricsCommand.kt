@@ -10,6 +10,7 @@ import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.internal.LogLevel
 import org.grakovne.swiftbot.events.internal.LoggingEvent
 import org.grakovne.swiftbot.payment.cache.PaymentCacheService
+import org.grakovne.swiftbot.user.domain.UserReference
 import org.springframework.stereotype.Service
 
 @Service
@@ -21,7 +22,11 @@ class CheckMetricsCommand(
 
     override fun getHelp(): String = "Shows statistics on tracked payments"
 
-    override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
+    override fun accept(
+        bot: TelegramBot,
+        update: Update,
+        user: UserReference
+    ): Either<TelegramUpdateProcessingError, Unit> {
         val message = """
             Tracked payments info
             

@@ -9,7 +9,7 @@ data class UserReference(
     val id: String,
     @Enumerated(EnumType.STRING)
     val source: UserReferenceSource,
-
+    val language: String?,
     @ElementCollection(fetch = FetchType.EAGER)
     val subscribedPayments: Set<UUID>
 )

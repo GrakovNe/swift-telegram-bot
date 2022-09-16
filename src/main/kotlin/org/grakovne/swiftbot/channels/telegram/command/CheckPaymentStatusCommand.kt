@@ -17,10 +17,9 @@ import org.grakovne.swiftbot.payment.metrics.PaymentReportService
 import org.grakovne.swiftbot.payment.synchronization.CommonSynchronizationError
 import org.grakovne.swiftbot.payment.synchronization.payment.PaymentService
 import org.grakovne.swiftbot.user.UserReferenceService
-import org.grakovne.swiftbot.user.domain.UserReferenceSource
+import org.grakovne.swiftbot.user.domain.UserReference
+import org.grakovne.swiftbot.utils.findPaymentId
 import org.springframework.stereotype.Service
-import java.util.*
-import java.util.regex.Pattern
 
 @Service
 class CheckPaymentStatusCommand(
@@ -34,17 +33,14 @@ class CheckPaymentStatusCommand(
     override fun getArguments() = "<UETR>"
     override fun getHelp(): String = "Checks current payment status and subscribes for a changes"
 
-    override fun isAcceptable(update: Update): Boolean {
-        val isStartsFromKey = update.message().text().startsWith("/" + getKey())
-        val isStartsFromPaymentId = pattern.matcher(update.message().text()).find()
+    override fun accept(
+        bot: TelegramBot,
+        update: Update,
+        user: UserReference
+    ): Either<TelegramUpdateProcessingError, Unit> {
+        val paymentId = update.findPaymentId()
 
-        return isStartsFromPaymentId || isStartsFromKey
-    }
-
-    override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
-        val matcher = pattern.matcher(update.message().text())
-
-        if (!matcher.find()) {
+        if (null == paymentId) {
             bot.execute(
                 SendMessage(
                     update.message().chat().id(),
@@ -54,17 +50,9 @@ class CheckPaymentStatusCommand(
             return Either.Left(TelegramUpdateProcessingError.INVALID_REQUEST)
         }
 
-        val paymentId = UUID.fromString(matcher.group(0))
-
         return paymentService
             .fetchPaymentStatus(paymentId)
-            .tap {
-                userReferenceService.subscribeToPayment(
-                    update.message().chat().id().toString(),
-                    paymentId,
-                    UserReferenceSource.TELEGRAM
-                )
-            }
+            .tap { userReferenceService.subscribeToPayment(user, paymentId) }
             .map { view ->
                 bot.execute(SendMessage(update.message().chat().id(), view.toMessage()).parseMode(ParseMode.HTML))
             }
@@ -122,9 +110,4 @@ class CheckPaymentStatusCommand(
             Previous updates:$history
         """
     }
-
-    companion object {
-        private val pattern = Pattern.compile("[a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}")
-    }
-
 }

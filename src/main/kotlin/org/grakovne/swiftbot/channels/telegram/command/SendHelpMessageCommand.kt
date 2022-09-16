@@ -8,6 +8,7 @@ import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
 import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.internal.LogLevel
 import org.grakovne.swiftbot.events.internal.LoggingEvent
+import org.grakovne.swiftbot.user.domain.UserReference
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,7 +20,11 @@ class SendHelpMessageCommand(
     override fun getKey(): String = "help"
     override fun getHelp() = "Prints help"
 
-    override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
+    override fun accept(
+        bot: TelegramBot,
+        update: Update,
+        user: UserReference
+    ): Either<TelegramUpdateProcessingError, Unit> {
         val isMessageSent = bot.execute(SendMessage(update.message().chat().id(), buildHelp())).isOk
 
         return when (isMessageSent) {

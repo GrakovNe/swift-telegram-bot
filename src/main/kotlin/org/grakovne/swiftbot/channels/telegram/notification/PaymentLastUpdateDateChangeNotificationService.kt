@@ -11,7 +11,6 @@ import org.grakovne.swiftbot.events.core.EventType
 import org.grakovne.swiftbot.events.internal.LogLevel
 import org.grakovne.swiftbot.events.internal.LoggingEvent
 import org.grakovne.swiftbot.events.payment.PaymentLastUpdatedChangedEvent
-import org.grakovne.swiftbot.events.payment.PaymentStatusChangedEvent
 import org.grakovne.swiftbot.user.UserReferenceService
 import org.grakovne.swiftbot.user.domain.UserReferenceSource
 import org.springframework.stereotype.Service

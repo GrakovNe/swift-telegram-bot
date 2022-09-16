@@ -4,6 +4,7 @@ import arrow.core.Either
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
 import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
+import org.grakovne.swiftbot.user.domain.UserReference
 
 interface TelegramOnMessageCommand {
 
@@ -12,5 +13,5 @@ interface TelegramOnMessageCommand {
     fun getArguments(): String = ""
 
     fun isAcceptable(update: Update): Boolean = update.message().text().startsWith("/" + getKey())
-    fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit>
+    fun accept(bot: TelegramBot, update: Update, user: UserReference): Either<TelegramUpdateProcessingError, Unit>
 }

@@ -10,7 +10,7 @@ import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.internal.LogLevel
 import org.grakovne.swiftbot.events.internal.LoggingEvent
 import org.grakovne.swiftbot.user.UserReferenceService
-import org.grakovne.swiftbot.user.domain.UserReferenceSource
+import org.grakovne.swiftbot.user.domain.UserReference
 import org.springframework.stereotype.Service
 import java.util.*
 import java.util.regex.Pattern
@@ -25,7 +25,11 @@ class UnsubscribePaymentStatusCommand(
     override fun getArguments(): String = "<UETR>"
     override fun getHelp(): String = "Unsubscribes for a status changes notifications"
 
-    override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
+    override fun accept(
+        bot: TelegramBot,
+        update: Update,
+        user: UserReference
+    ): Either<TelegramUpdateProcessingError, Unit> {
         val pattern = Pattern.compile("[a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}")
         val matcher = pattern.matcher(update.message().text())
 
@@ -40,12 +44,7 @@ class UnsubscribePaymentStatusCommand(
         }
 
         val paymentId = UUID.fromString(matcher.group(0))
-
-        userReferenceService.unsubscribeFromPayment(
-            update.message().chat().id().toString(),
-            paymentId,
-            UserReferenceSource.TELEGRAM
-        )
+        userReferenceService.unsubscribeFromPayment(user, paymentId)
 
         val isMessageSent = bot.execute(SendMessage(update.message().chat().id(), "Unsubscribed")).isOk
 

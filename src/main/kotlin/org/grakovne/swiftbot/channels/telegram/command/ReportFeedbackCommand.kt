@@ -11,6 +11,7 @@ import org.grakovne.swiftbot.events.internal.LogLevel
 import org.grakovne.swiftbot.events.internal.LoggingEvent
 import org.grakovne.swiftbot.feedback.FeedbackService
 import org.grakovne.swiftbot.user.UserReferenceService
+import org.grakovne.swiftbot.user.domain.UserReference
 import org.grakovne.swiftbot.user.domain.UserReferenceSource
 import org.springframework.stereotype.Service
 
@@ -24,7 +25,11 @@ class ReportFeedbackCommand(
 
     override fun getHelp(): String = "Reports a text message to the developer of this bot"
 
-    override fun accept(bot: TelegramBot, update: Update): Either<TelegramUpdateProcessingError, Unit> {
+    override fun accept(
+        bot: TelegramBot,
+        update: Update,
+        user: UserReference
+    ): Either<TelegramUpdateProcessingError, Unit> {
         val text = update.message().text()?.substringAfter(getKey())?.trim()
 
         if (text == null || text.isEmpty()) {
@@ -39,7 +44,11 @@ class ReportFeedbackCommand(
         }
 
         userReferenceService
-            .fetchUser(update.message().chat().id().toString(), UserReferenceSource.TELEGRAM)
+            .fetchUser(
+                update.message().chat().id().toString(),
+                UserReferenceSource.TELEGRAM,
+                update.message().from().languageCode() ?: "en"
+            )
             .let { feedbackService.reportFeedback(it, text) }
 
         val isMessageSent = bot.execute(

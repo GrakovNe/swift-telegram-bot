@@ -1,7 +1,7 @@
 package org.grakovne.swiftbot.feedback.domain
 
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 import javax.persistence.Entity
 import javax.persistence.Id
 
