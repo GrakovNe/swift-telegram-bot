@@ -41,12 +41,10 @@ class MessageLocalizationService(
         return objectMapper.readValue(content, object : TypeReference<List<MessageTemplate>>() {})
     }
 
-    private fun getLocalizationResource(language: Language): File {
-        return try {
-            ResourceUtils.getFile("classpath:messages_${language.code}.json")
-        } catch (ex: FileNotFoundException) {
-            ResourceUtils.getFile("classpath:messages.json")
-        }
+    private fun getLocalizationResource(language: Language) = try {
+        ResourceUtils.getFile("classpath:messages_${language.code}.json")
+    } catch (ex: FileNotFoundException) {
+        ResourceUtils.getFile("classpath:messages.json")
     }
 
     private fun Any.getField(fieldName: String, language: Language): String? {
