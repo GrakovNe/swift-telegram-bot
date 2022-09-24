@@ -7,11 +7,11 @@
   {
     "name": "payment_status_with_history",
     "type": "HTML",
-    "template": "Payment info\n\n<b>UETR</b>: ${paymentId}\n\n<b>Current status</b>: ${status}\n<b>Last update</b>: ${lastUpdateTimestamp}\n\n${history}\nnow you're subscribed to payment updates"
+    "template": "Payment info\n\n<b>UETR</b>: ${paymentId}\n\n<b>Current status</b>: ${status}\n<b>Last update</b>: ${lastUpdateTimestamp}\n\nPrevious updates:\n\n${history}\n\nnow you're subscribed to payment updates"
   },
   {
     "name": "payment_status_history_item",
     "type": "HTML",
-    "template": "${\n\n<b>Time</b>: ${timestamp}\n<b>Status</b>: ${status}"
+    "template": "<b>Time</b>: ${timestamp}\n<b>Status</b>: ${status}"
   }
 ]

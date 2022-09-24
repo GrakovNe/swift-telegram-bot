@@ -2,14 +2,14 @@
   {
     "name": "PaymentStatus",
     "values": {
-      "CREDITED": "ЗАЧИСЛЕН",
-      "PROCESSING": "В ОБРАБОТКЕ",
-      "SENT_TO_GPI_BANK": "ОТПРАВЛЕН В GPI БАНК",
-      "SENT_TO_NON_GPI_BANK": "ОТПРАВЛЕН В БАНК БЕЗ GPI",
-      "PENDING_CREDIT": "ОЖИДАЕТ ЗАЧИСЛЕНИЯ",
-      "CREDITED_FOR_ACCOUNT_CLARIFICATION": "ЗАЧИСЛЕН НА СПЕЦИАЛЬНЫЙ СЧЕТ ДО УСТАНОВЛЕНИЯ ПОЛУЧАТЕЛЯ",
-      "COVERAGE_WAITING": "ОЖИДАЕТ ПОКРЫТИЯ",
-      "REJECTED": "ОТКЛОНЕН"
+      "CREDITED": "Зачислен",
+      "PROCESSING": "В обработке",
+      "SENT_TO_GPI_BANK": "Отправлен в GPI банк",
+      "SENT_TO_NON_GPI_BANK": "Отправлен в банк без GPI",
+      "PENDING_CREDIT": "Ожидает зачисления",
+      "CREDITED_FOR_ACCOUNT_CLARIFICATION": "Зачислен на особый счет до установления получателя",
+      "COVERAGE_WAITING": "Ожидает покрытия",
+      "REJECTED": "Отклонен"
     }
   }
 ]

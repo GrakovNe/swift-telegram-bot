@@ -1,13 +1,13 @@
 package org.grakovne.swiftbot.channels.telegram.command
 
 import arrow.core.Either
-import arrow.core.tail
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
 import com.pengrad.telegrambot.model.request.ParseMode
 import com.pengrad.telegrambot.request.SendMessage
 import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
-import org.grakovne.swiftbot.common.converter.toMessage
+import org.grakovne.swiftbot.channels.telegram.messaging.PaymentInfo
+import org.grakovne.swiftbot.channels.telegram.messaging.PaymentStatusMessageSender
 import org.grakovne.swiftbot.dto.PaymentView
 import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.internal.LogLevel.DEBUG
@@ -26,7 +26,8 @@ class CheckPaymentStatusCommand(
     private val paymentService: PaymentService,
     private val paymentReportService: PaymentReportService,
     private val userReferenceService: UserReferenceService,
-    private val eventSender: EventSender
+    private val eventSender: EventSender,
+    private val messageSender: PaymentStatusMessageSender
 ) : TelegramOnMessageCommand {
 
     override fun getKey(): String = "check"
@@ -54,7 +55,7 @@ class CheckPaymentStatusCommand(
             .fetchPaymentStatus(paymentId)
             .tap { userReferenceService.subscribeToPayment(user, paymentId) }
             .map { view ->
-                bot.execute(SendMessage(update.message().chat().id(), view.toMessage()).parseMode(ParseMode.HTML))
+                messageSender.respondMessage(update, user, view.toMessage())
             }
             .tap { eventSender.sendEvent(LoggingEvent(DEBUG, "Checked payment status with id $paymentId")) }
             .map { }
@@ -82,32 +83,10 @@ class CheckPaymentStatusCommand(
             }
     }
 
-    private fun PaymentView.toMessage(): String {
-        return """
-            Payment info
-            
-            <b>UETR</b>: ${this.id}
-            
-            <b>Current status</b>: ${this.status}
-            <b>Last update</b>: ${this.lastUpdateTimestamp.toMessage()}
-            ${if (paymentReportService.fetchEntries(this.id).size > 1) this.toHistory() else ""}
-            now you're subscribed to payment updates
-        """.trimIndent()
-    }
-
-    private fun PaymentView.toHistory(): String {
-        val history = paymentReportService
-            .fetchEntries(this.id)
-            .tail()
-            .joinToString(separator = "") {
-                """
-                    
-            <b>Time</b>: ${it.timestamp.toMessage()}
-            <b>Status</b>: ${it.newStatus}"""
-            }
-
-        return """
-            Previous updates:$history
-        """
-    }
+    private fun PaymentView.toMessage() = PaymentInfo(
+        paymentId = this.id,
+        status = this.status,
+        lastUpdateTimestamp = this.lastUpdateTimestamp,
+        history = paymentReportService.fetchEntries(this.id).map { it.newStatus to it.timestamp }
+    )
 }
