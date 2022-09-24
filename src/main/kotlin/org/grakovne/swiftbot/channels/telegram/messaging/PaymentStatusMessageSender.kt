@@ -5,9 +5,7 @@ import arrow.core.flatMap
 import arrow.core.sequence
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
-import org.grakovne.swiftbot.channels.telegram.MessageSender
 import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
-import org.grakovne.swiftbot.channels.telegram.provideLanguage
 import org.grakovne.swiftbot.dto.PaymentStatus
 import org.grakovne.swiftbot.localization.*
 import org.grakovne.swiftbot.user.domain.UserReference
@@ -68,7 +66,6 @@ private fun Pair<PaymentStatus, Instant>.toHistoryItem(): PaymentStatusHistoryIt
         timestamp = this.second
     )
 }
-
 
 private fun PaymentInfo.toPaymentStatusMessage(): PaymentStatusMessage {
     return PaymentStatusMessage(

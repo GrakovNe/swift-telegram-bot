@@ -23,3 +23,10 @@ data class PaymentStatusHistoryItem(
     val timestamp: Instant,
     val status: PaymentStatus
 ) : Message("payment_status_history_item")
+
+data class BotMetrics(
+    val countSuccessfully: Long,
+    val countProcessing: Long,
+    val countFailed: Long,
+    val countTotal: Long
+) : Message("bot_metrics")

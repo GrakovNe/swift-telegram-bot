@@ -13,5 +13,10 @@
     "name": "payment_status_history_item",
     "type": "HTML",
     "template": "<b>Time</b>: ${timestamp}\n<b>Status</b>: ${status}"
+  },
+  {
+    "name": "bot_metrics",
+    "type": "HTML",
+    "template": "Tracked payments info\n\nSuccessfully credited payments: <b>${countSuccessfully}</b>\nPayments in process: <b>${countProcessing}</b>\nFailed or rejected payments: <b>${countFailed}</b>\n\nTotal tracked payments: <b>${countTotal}</b>"
   }
 ]
