@@ -55,7 +55,7 @@ class CheckPaymentStatusCommand(
             .fetchPaymentStatus(paymentId)
             .tap { userReferenceService.subscribeToPayment(user, paymentId) }
             .map { view ->
-                messageSender.respondMessage(update, user, view.toMessage())
+                messageSender.sendResponse(update, user, view.toMessage())
             }
             .tap { eventSender.sendEvent(LoggingEvent(DEBUG, "Checked payment status with id $paymentId")) }
             .map { }

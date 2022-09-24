@@ -15,7 +15,7 @@ class SimpleMessageSender(
     private val localizationService: MessageLocalizationService
 ) : MessageSender(bot) {
 
-    fun <T : Message> send(
+    fun <T : Message> sendResponse(
         origin: Update,
         userReference: UserReference,
         message: T

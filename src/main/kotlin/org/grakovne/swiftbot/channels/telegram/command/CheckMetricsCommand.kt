@@ -26,7 +26,7 @@ class CheckMetricsCommand(
         update: Update,
         user: UserReference
     ) = simpleMessageSender
-        .send(
+        .sendResponse(
             update,
             user,
             BotMetrics(

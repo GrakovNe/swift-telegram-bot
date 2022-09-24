@@ -19,7 +19,7 @@ class PaymentStatusMessageSender(
     private val localizationService: MessageLocalizationService
 ) : MessageSender(bot) {
 
-    fun respondMessage(
+    fun sendResponse(
         origin: Update,
         userReference: UserReference,
         paymentInfo: PaymentInfo

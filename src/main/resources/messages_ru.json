@@ -17,6 +17,6 @@
   {
     "name": "bot_metrics",
     "type": "HTML",
-    "template": "Информация об отслеживаемых платежах\n\nУспешно зачисленных: <b>${countSuccessfully}</b>\nВ процессе: <b>${countProcessing}</b>\nОтклоненных: <b>${countFailed}</b>\n\nВсего: <b>${countTotal}</b>"
+    "template": "Информация об отслеживаемых платежах\n\nУспешно зачисленных: <b>${countSuccessfully}</b>\nВ процессе: <b>${countProcessing}</b>\nОтклоненных: <b>${countFailed}</b>\n\nВсего отслеживается: <b>${countTotal}</b>"
   }
 ]
