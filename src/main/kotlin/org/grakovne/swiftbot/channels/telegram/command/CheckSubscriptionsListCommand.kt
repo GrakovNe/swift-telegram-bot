@@ -1,10 +1,10 @@
 package org.grakovne.swiftbot.channels.telegram.command
 
 import arrow.core.Either
-import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
 import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
 import org.grakovne.swiftbot.channels.telegram.messaging.PaymentSubscriptionsMessageSender
+import org.grakovne.swiftbot.dto.CommandType
 import org.grakovne.swiftbot.user.UserReferenceService
 import org.grakovne.swiftbot.user.domain.UserReference
 import org.springframework.stereotype.Service
@@ -16,10 +16,9 @@ class CheckSubscriptionsListCommand(
 ) : TelegramOnMessageCommand {
 
     override fun getKey(): String = "subscriptions"
-    override fun getHelp(): String = "Shows list of subscriptions"
+    override fun getType() = CommandType.SHOW_SUBSCRIPTIONS
 
     override fun accept(
-        bot: TelegramBot,
         update: Update,
         user: UserReference
     ): Either<TelegramUpdateProcessingError, Unit> {

@@ -5,9 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.text.StringSubstitutor
 import org.grakovne.swiftbot.common.converter.toMessage
+import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Service
-import org.springframework.util.ResourceUtils
-import java.io.File
 import java.io.FileNotFoundException
 import java.time.Instant
 import kotlin.reflect.full.memberProperties
@@ -34,17 +33,16 @@ class MessageLocalizationService(
     }
 
     private fun findLocalizationResources(language: Language): List<MessageTemplate> {
-        val content = getLocalizationResource(language).path
-            .let { File(it) }
+        val content = getLocalizationResource(language)
             .readBytes()
 
         return objectMapper.readValue(content, object : TypeReference<List<MessageTemplate>>() {})
     }
 
     private fun getLocalizationResource(language: Language) = try {
-        ResourceUtils.getFile("classpath:messages_${language.code}.json")
+        ClassPathResource("messages_${language.code}.json").inputStream
     } catch (ex: FileNotFoundException) {
-        ResourceUtils.getFile("classpath:messages.json")
+        ClassPathResource("messages.json").inputStream
     }
 
     private fun Any.getField(fieldName: String, language: Language): String? {

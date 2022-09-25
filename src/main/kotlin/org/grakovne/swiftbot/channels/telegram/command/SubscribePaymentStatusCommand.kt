@@ -1,14 +1,15 @@
 package org.grakovne.swiftbot.channels.telegram.command
 
 import arrow.core.Either
-import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
-import com.pengrad.telegrambot.model.request.ParseMode
-import com.pengrad.telegrambot.request.SendMessage
 import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
+import org.grakovne.swiftbot.channels.telegram.messaging.SimpleMessageSender
+import org.grakovne.swiftbot.dto.CommandType
 import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.internal.LogLevel
 import org.grakovne.swiftbot.events.internal.LoggingEvent
+import org.grakovne.swiftbot.localization.IncorrectPaymentId
+import org.grakovne.swiftbot.localization.PaymentUpdatedSubscribed
 import org.grakovne.swiftbot.user.UserReferenceService
 import org.grakovne.swiftbot.user.domain.UserReference
 import org.springframework.stereotype.Service
@@ -18,15 +19,15 @@ import java.util.regex.Pattern
 @Service
 class SubscribePaymentStatusCommand(
     private val userReferenceService: UserReferenceService,
-    private val eventSender: EventSender
+    private val eventSender: EventSender,
+    private val messageSender: SimpleMessageSender
 ) : TelegramOnMessageCommand {
 
     override fun getKey(): String = "subscribe"
-    override fun getArguments(): String = "<UETR>"
-    override fun getHelp(): String = "Subscribes for a status changes notifications"
+    override fun getArguments(): String = "[UETR]"
+    override fun getType() = CommandType.SUBSCRIBE_UPDATES
 
     override fun accept(
-        bot: TelegramBot,
         update: Update,
         user: UserReference
     ): Either<TelegramUpdateProcessingError, Unit> {
@@ -34,37 +35,22 @@ class SubscribePaymentStatusCommand(
         val matcher = pattern.matcher(update.message().text())
 
         if (!matcher.find()) {
-            bot.execute(
-                SendMessage(
-                    update.message().chat().id(),
-                    "Please provide valid UETR\n\n<b>Example</b>: <i>/subscribe 1b5c013c-8601-46ba-a982-e88848140329</i>"
-                ).parseMode(ParseMode.HTML)
-            )
+            messageSender.sendResponse(update, user, IncorrectPaymentId(getKey()))
             return Either.Left(TelegramUpdateProcessingError.INVALID_REQUEST)
         }
 
         val paymentId = UUID.fromString(matcher.group(0))
         userReferenceService.subscribeToPayment(user, paymentId)
 
-        val isMessageSent = bot.execute(SendMessage(update.message().chat().id(), "Subscribed")).isOk
-
-        return when (isMessageSent) {
-            true -> {
+        return messageSender
+            .sendResponse(update, user, PaymentUpdatedSubscribed)
+            .tap {
                 eventSender.sendEvent(
                     LoggingEvent(
                         LogLevel.DEBUG,
                         "subscribed to payment id $paymentId status changes"
                     )
                 )
-                Either.Right(Unit)
             }
-            false -> {
-                LoggingEvent(
-                    LogLevel.WARN,
-                    "Unable to subscribe user ${update.message().chat().id()} to payment $paymentId"
-                )
-                Either.Left(TelegramUpdateProcessingError.RESPONSE_NOT_SENT)
-            }
-        }
     }
 }

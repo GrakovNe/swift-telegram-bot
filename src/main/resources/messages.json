@@ -28,5 +28,45 @@
     "name": "user_subscription_item",
     "type": "HTML",
     "template": "UETR: ${paymentId}"
+  },
+  {
+    "name": "payment_status_not_found",
+    "type": "HTML",
+    "template": "Unable to find payment by UETR. Please try check UETR and try again\n\n<i>Please, note that payments older 3 months may not be tracked</i>"
+  },
+  {
+    "name": "incorrect_payment_id",
+    "type": "HTML",
+    "template": "Please provide valid UETR\n\n<b>Example</b>: <i>/${key} 1b5c013c-8601-46ba-a982-e88848140329</i>"
+  },
+  {
+    "name": "report_accepted",
+    "type": "HTML",
+    "template": "Thank you for your feedback!"
+  },
+  {
+    "name": "report_not_accepted_empty_message",
+    "type": "HTML",
+    "template": "Please provide non-empty report\n\n<b>Example</b>: <i>/report I have few words for you!</i>"
+  },
+  {
+    "name": "help_message",
+    "type": "HTML",
+    "template": "Unofficial SWIFT GPI Payments Tracker\n\nAuthor: @maxgrakov\n\nAvailable Commands:\n\n${items}\n\nPlease note that we don't collect any detailed payment information"
+  },
+  {
+    "name": "help_message_item",
+    "type": "HTML",
+    "template": "/${key} - ${description}"
+  },
+  {
+    "name": "subscribed_payment_updates",
+    "type": "HTML",
+    "template": "Subscribed"
+  },
+  {
+    "name": "unsubscribed_payment_updates",
+    "type": "HTML",
+    "template": "unsubscribed"
   }
 ]

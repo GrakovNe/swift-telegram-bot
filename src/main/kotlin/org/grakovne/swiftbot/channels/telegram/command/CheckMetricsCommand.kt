@@ -1,8 +1,8 @@
 package org.grakovne.swiftbot.channels.telegram.command
 
-import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
 import org.grakovne.swiftbot.channels.telegram.messaging.SimpleMessageSender
+import org.grakovne.swiftbot.dto.CommandType
 import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.internal.LogLevel
 import org.grakovne.swiftbot.events.internal.LoggingEvent
@@ -19,10 +19,9 @@ class CheckMetricsCommand(
 ) : TelegramOnMessageCommand {
     override fun getKey(): String = "metrics"
 
-    override fun getHelp(): String = "Shows statistics on tracked payments"
+    override fun getType() = CommandType.METRICS
 
     override fun accept(
-        bot: TelegramBot,
         update: Update,
         user: UserReference
     ) = simpleMessageSender

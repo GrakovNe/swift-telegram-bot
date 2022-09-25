@@ -7,9 +7,12 @@ import com.pengrad.telegrambot.model.BotCommand
 import com.pengrad.telegrambot.model.Update
 import com.pengrad.telegrambot.request.SetMyCommands
 import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
+import org.grakovne.swiftbot.channels.telegram.messaging.provideLanguage
 import org.grakovne.swiftbot.events.core.EventSender
 import org.grakovne.swiftbot.events.internal.LogLevel.WARN
 import org.grakovne.swiftbot.events.internal.LoggingEvent
+import org.grakovne.swiftbot.localization.EnumLocalizationService
+import org.grakovne.swiftbot.localization.Language
 import org.grakovne.swiftbot.user.UserReferenceService
 import org.grakovne.swiftbot.user.domain.UserReferenceSource
 import org.springframework.stereotype.Service
@@ -21,7 +24,8 @@ class TelegramOnMessageConfiguration(
     private val unknownCommandProcessor: UnknownMessageCommandProcessingService,
     private val commands: List<TelegramOnMessageCommand>,
     private val eventSender: EventSender,
-    private val userReferenceService: UserReferenceService
+    private val userReferenceService: UserReferenceService,
+    private val enumLocalizationService: EnumLocalizationService
 ) {
 
     @PostConstruct
@@ -45,8 +49,8 @@ class TelegramOnMessageConfiguration(
 
         update
             .findCommand()
-            .accept(bot, update, user)
-            .tap { bot.execute(SetMyCommands(*commandsDescription)) }
+            .accept(update, user)
+            .tap { bot.execute(SetMyCommands(*commandsDescription(user.provideLanguage()))) }
     } catch (ex: Exception) {
         eventSender.sendEvent(LoggingEvent(WARN, "Internal Exception. Message = ${ex.message}"))
         Either.Left(TelegramUpdateProcessingError.INTERNAL_ERROR)
@@ -58,5 +62,13 @@ class TelegramOnMessageConfiguration(
             ?: unknownCommandProcessor.findCommand(this)
 
     private fun Update.hasSender() = this.message()?.chat()?.id() != null
-    private val commandsDescription = commands.map { BotCommand(it.getKey(), it.getHelp()) }.toTypedArray()
+
+    private fun commandsDescription(targetLanguage: Language) = commands
+        .map {
+            BotCommand(
+                it.getKey(),
+                enumLocalizationService.localize(it.getType(), targetLanguage)
+            )
+        }
+        .toTypedArray()
 }

@@ -11,5 +11,17 @@
       "COVERAGE_WAITING": "COVERAGE WAITING",
       "REJECTED": "REJECTED"
     }
+  },
+  {
+    "name": "CommandType",
+    "values": {
+      "METRICS": "Shows statistics on tracked payments",
+      "CHECK_PAYMENT_STATUS": "Checks current payment status and subscribes for a change",
+      "SHOW_SUBSCRIPTIONS": "Show's list of subscriptions",
+      "REPORT_FEEDBACK": "Reports a text message to the developer of this bot",
+      "SEND_HELP": "Prints help",
+      "SUBSCRIBE_UPDATES": "Subscribes for a status changes notifications",
+      "UNSUBSCRIBE_UPDATES": "Unsubscribes from status changes notifications"
+    }
   }
 ]

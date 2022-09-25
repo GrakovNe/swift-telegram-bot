@@ -2,10 +2,10 @@ package org.grakovne.swiftbot.localization
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Service
-import org.springframework.util.ResourceUtils
-import java.io.File
 import java.io.FileNotFoundException
+import java.io.InputStream
 
 @Service
 class EnumLocalizationService(val objectMapper: ObjectMapper) {
@@ -19,18 +19,17 @@ class EnumLocalizationService(val objectMapper: ObjectMapper) {
         ?: enum.name
 
     private fun findLocalizationResources(language: Language): List<EnumTemplate> {
-        val content = getLocalizationResource(language).path
-            .let { File(it) }
+        val content = getLocalizationResource(language)
             .readBytes()
 
         return objectMapper.readValue(content, object : TypeReference<List<EnumTemplate>>() {})
     }
 
-    private fun getLocalizationResource(language: Language): File {
+    private fun getLocalizationResource(language: Language): InputStream {
         return try {
-            ResourceUtils.getFile("classpath:enums_${language.code}.json")
+            ClassPathResource("enums_${language.code}.json").inputStream
         } catch (ex: FileNotFoundException) {
-            ResourceUtils.getFile("classpath:enums.json")
+            ClassPathResource("enums.json").inputStream
         }
     }
 }

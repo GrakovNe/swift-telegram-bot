@@ -28,5 +28,45 @@
     "name": "user_subscription_item",
     "type": "HTML",
     "template": "UETR: ${paymentId}"
+  },
+  {
+    "name": "payment_status_not_found",
+    "type": "HTML",
+    "template": "Не удалось отследить платеж по UETR. Проверьте правильность идентификатора и попробуйте снова\n\n<i>Платежи, отправленные больше чем три месяца назад могут не отслеживаться</i>"
+  },
+  {
+    "name": "incorrect_payment_id",
+    "type": "HTML",
+    "template": "Пожалуйста, пришлите правильный UETR\n\n<b>Пример</b>: <i>/${key} 1b5c013c-8601-46ba-a982-e88848140329</i>"
+  },
+  {
+    "name": "report_accepted",
+    "type": "HTML",
+    "template": "Спасибо за отзыв!"
+  },
+  {
+    "name": "report_not_accepted_empty_message",
+    "type": "HTML",
+    "template": "Пожалуйста, пришлите не пустой отзыв\n\n<b>Пример</b>: <i>/report У меня есть несколько слов для автора</i>"
+  },
+  {
+    "name": "help_message",
+    "type": "HTML",
+    "template": "Неофициальный SWIFT GPI трекер платежей\n\nАвтор: @maxgrakov\n\nДоступные команды:\n\n${items}\n\nБот не запрашивает и не хранит подробных данных о платежах"
+  },
+  {
+    "name": "help_message_item",
+    "type": "HTML",
+    "template": "/${key} - ${description}"
+  },
+  {
+    "name": "subscribed_payment_updates",
+    "type": "HTML",
+    "template": "Подписка на обновления активна"
+  },
+  {
+    "name": "unsubscribed_payment_updates",
+    "type": "HTML",
+    "template": "Пописка на обновления отменена"
   }
 ]
