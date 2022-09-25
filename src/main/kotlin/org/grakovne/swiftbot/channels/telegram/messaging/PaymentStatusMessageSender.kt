@@ -3,6 +3,7 @@ package org.grakovne.swiftbot.channels.telegram.messaging
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.sequence
+import arrow.core.tail
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
 import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
@@ -26,7 +27,7 @@ class PaymentStatusMessageSender(
     ): Either<TelegramUpdateProcessingError, Unit> {
         val targetLanguage = userReference.provideLanguage()
 
-        val message: Either<LocalizationError, Message> = when (paymentInfo.history.isEmpty()) {
+        val message: Either<LocalizationError, Message> = when (paymentInfo.history.tail().isEmpty()) {
             true -> paymentInfo.toPaymentStatusMessage().let { Either.Right(it) }
             false -> paymentInfo.toPaymentStatusWithHistoryMessage(targetLanguage, localizationService)
         }
@@ -44,10 +45,11 @@ private fun PaymentInfo.toPaymentStatusWithHistoryMessage(
     localizationService: MessageLocalizationService
 ) = this
     .history
+    .tail()
     .map { it.toHistoryItem() }
     .map { localizationService.localize(it, language) }
     .sequence()
-    .map { it.joinToString("\n") }
+    .map { it.joinToString("\n\n") }
     .map {
         PaymentStatusWithHistoryMessage(
             paymentId = this.paymentId,
