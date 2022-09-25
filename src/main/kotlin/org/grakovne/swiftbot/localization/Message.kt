@@ -2,7 +2,7 @@ package org.grakovne.swiftbot.localization
 
 import org.grakovne.swiftbot.dto.PaymentStatus
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 sealed class Message(val templateName: String)
 
@@ -30,3 +30,11 @@ data class BotMetrics(
     val countFailed: Long,
     val countTotal: Long
 ) : Message("bot_metrics")
+
+data class UserSubscriptions(
+    val subscriptionItems: String
+) : Message("user_subscriptions")
+
+data class UserSubscriptionItem(
+    val paymentId: UUID
+) : Message("user_subscription_item")

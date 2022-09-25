@@ -18,5 +18,15 @@
     "name": "bot_metrics",
     "type": "HTML",
     "template": "Информация об отслеживаемых платежах\n\nУспешно зачисленных: <b>${countSuccessfully}</b>\nВ процессе: <b>${countProcessing}</b>\nОтклоненных: <b>${countFailed}</b>\n\nВсего отслеживается: <b>${countTotal}</b>"
+  },
+  {
+    "name": "user_subscriptions",
+    "type": "HTML",
+    "template": "Подписки:\n\n${subscriptionItems}"
+  },
+  {
+    "name": "user_subscription_item",
+    "type": "HTML",
+    "template": "UETR: ${paymentId}"
   }
 ]

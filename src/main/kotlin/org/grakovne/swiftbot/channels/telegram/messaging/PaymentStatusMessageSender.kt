@@ -45,10 +45,7 @@ private fun PaymentInfo.toPaymentStatusWithHistoryMessage(
 ) = this
     .history
     .map { it.toHistoryItem() }
-    .map {
-        val f = localizationService.localize(it, language)
-        f
-    }
+    .map { localizationService.localize(it, language) }
     .sequence()
     .map { it.joinToString("\n") }
     .map {

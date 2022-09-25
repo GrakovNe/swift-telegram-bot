@@ -18,5 +18,15 @@
     "name": "bot_metrics",
     "type": "HTML",
     "template": "Tracked payments info\n\nSuccessfully credited payments: <b>${countSuccessfully}</b>\nPayments in process: <b>${countProcessing}</b>\nFailed or rejected payments: <b>${countFailed}</b>\n\nTotal tracked payments: <b>${countTotal}</b>"
+  },
+  {
+    "name": "user_subscriptions",
+    "type": "HTML",
+    "template": "Subscriptions:\n\n${subscriptionItems}"
+  },
+  {
+    "name": "user_subscription_item",
+    "type": "HTML",
+    "template": "UETR: ${paymentId}"
   }
 ]
