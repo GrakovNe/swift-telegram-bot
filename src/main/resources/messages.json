@@ -68,5 +68,15 @@
     "name": "unsubscribed_payment_updates",
     "type": "HTML",
     "template": "unsubscribed"
+  },
+  {
+    "name": "payment_status_changed",
+    "type": "HTML",
+    "template": "Payment status changed\n\n<b>UETR</b>: ${paymentId}\n\n<b>Previous status</b>: ${previousStatus}\n<b>Current status</b>: ${currentStatus}\n<b>Last update</b>: ${changedAt}"
+  },
+  {
+    "name": "payment_last_update_date_changed",
+    "type": "HTML",
+    "template": "Payment was under processing but status didn't change\n\n<b>UETR</b>: ${paymentId}\n\n<b>Payment status</b>: ${status}\n<b>Last update</b>: ${changedAt}"
   }
 ]

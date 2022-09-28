@@ -1,5 +1,6 @@
 package org.grakovne.swiftbot.channels.telegram.messaging
 
+import arrow.core.Either
 import arrow.core.flatMap
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
@@ -16,11 +17,17 @@ class SimpleMessageSender(
 ) : MessageSender(bot) {
 
     fun <T : Message> sendResponse(
-        origin: Update,
+        chatId: String,
         userReference: UserReference,
         message: T
     ) = localizationService
         .localize(message, userReference.provideLanguage())
         .mapLeft { TelegramUpdateProcessingError.INTERNAL_ERROR }
-        .flatMap { sendRawMessage(origin, it) }
+        .flatMap { sendRawMessage(chatId, it) }
+
+    fun <T : Message> sendResponse(
+        origin: Update,
+        userReference: UserReference,
+        message: T
+    ) = sendResponse(origin.message().chat().id().toString(), userReference, message)
 }

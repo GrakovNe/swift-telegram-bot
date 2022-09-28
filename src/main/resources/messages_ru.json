@@ -68,5 +68,15 @@
     "name": "unsubscribed_payment_updates",
     "type": "HTML",
     "template": "Пописка на обновления отменена"
+  },
+  {
+    "name": "payment_status_changed",
+    "type": "HTML",
+    "template": "Статус платежа обновлен\n\n<b>UETR</b>: ${paymentId}\n\n<b>Предыдущий статус</b>: ${previousStatus}\n<b>Текущий статус</b>: ${currentStatus}\n<b>Дата обновления</b>: ${changedAt}"
+  },
+  {
+    "name": "payment_last_update_date_changed",
+    "type": "HTML",
+    "template": "Платеж обработан с тем же статусом\n\n<b>UETR</b>: ${paymentId}\n\n<b>Текущий статус</b>: ${status}\n<b>Дата обновления</b>: ${changedAt}"
   }
 ]

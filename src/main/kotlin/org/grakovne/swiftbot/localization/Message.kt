@@ -39,6 +39,20 @@ data class UserSubscriptionItem(
     val paymentId: UUID
 ) : Message("user_subscription_item")
 
+data class PaymentStatusChanged(
+    val paymentId: UUID,
+    val previousStatus: PaymentStatus,
+    val currentStatus: PaymentStatus,
+    val changedAt: Instant
+): Message("payment_status_changed")
+
+
+data class PaymentLastUpdateDateChanged(
+    val paymentId: UUID,
+    val status: PaymentStatus,
+    val changedAt: Instant
+): Message("payment_last_update_date_changed")
+
 object PaymentStatusNotFound : Message("payment_status_not_found")
 object ReportAccepted : Message("report_accepted")
 object ReportNotAcceptedEmpty : Message("report_not_accepted_empty_message")

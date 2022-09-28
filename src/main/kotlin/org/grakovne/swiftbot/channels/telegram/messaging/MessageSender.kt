@@ -15,11 +15,11 @@ import org.springframework.stereotype.Service
 abstract class MessageSender(private val bot: TelegramBot) {
 
     protected fun sendRawMessage(
-        origin: Update,
+        chatId: String,
         text: String,
         type: MessageType = MessageType.HTML,
     ): Either<TelegramUpdateProcessingError, Unit> {
-        val isMessageSent = SendMessage(origin.message().chat().id(), text)
+        val isMessageSent = SendMessage(chatId, text)
             .setParseMode(type)
             .let { bot.execute(it).isOk }
 
@@ -28,6 +28,12 @@ abstract class MessageSender(private val bot: TelegramBot) {
             false -> Either.Left(TelegramUpdateProcessingError.RESPONSE_NOT_SENT)
         }
     }
+
+    protected fun sendRawMessage(
+        origin: Update,
+        text: String,
+        type: MessageType = MessageType.HTML,
+    ) = sendRawMessage(origin.message().chat().id().toString(), text, type)
 }
 
 private fun SendMessage.setParseMode(type: MessageType): SendMessage = when (type) {

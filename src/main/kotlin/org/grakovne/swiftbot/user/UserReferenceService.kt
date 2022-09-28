@@ -9,10 +9,9 @@ import java.util.*
 @Service
 class UserReferenceService(private val userReferenceRepository: UserReferenceRepository) {
 
-    fun fetchUsersWithSubscription(paymentId: UUID, source: UserReferenceSource): List<String> =
+    fun fetchUsersWithSubscription(paymentId: UUID, source: UserReferenceSource): List<UserReference> =
         userReferenceRepository
             .findBySubscribedPaymentsAndSource(paymentId, source)
-            .map { it.id }
 
     fun fetchUserSubscription(userId: String): List<UUID> = userReferenceRepository
         .findById(userId)
