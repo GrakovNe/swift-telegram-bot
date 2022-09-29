@@ -1,6 +1,8 @@
 package org.grakovne.swiftbot.channels.telegram.command
 
+import arrow.core.Either
 import com.pengrad.telegrambot.model.Update
+import org.grakovne.swiftbot.channels.telegram.TelegramUpdateProcessingError
 import org.grakovne.swiftbot.channels.telegram.messaging.SimpleMessageSender
 import org.grakovne.swiftbot.dto.CommandType
 import org.grakovne.swiftbot.events.core.EventSender
@@ -24,15 +26,26 @@ class CheckMetricsCommand(
     override fun accept(
         update: Update,
         user: UserReference
-    ) = simpleMessageSender
-        .sendResponse(
-            update,
-            user,
-            BotMetrics(
-                countProcessing = cacheService.countProcessing(),
-                countFailed = cacheService.countFailed(),
-                countSuccessfully = cacheService.countSuccessful(),
-                countTotal = cacheService.countTotal()
-            )
-        ).tap { eventSender.sendEvent(LoggingEvent(LogLevel.DEBUG, "Metrics was requested")) }
+    ): Either<TelegramUpdateProcessingError, Unit> {
+
+        val total = cacheService.countTotal()
+        val lastWeek = cacheService.countLastWeek()
+
+
+        return simpleMessageSender
+            .sendResponse(
+                update,
+                user,
+                BotMetrics(
+                    totalProcessing = total.processing,
+                    totalFailed = total.failed,
+                    totalSuccessfully = total.successfully,
+                    totalCount = total.total,
+                    lastWeekProcessing = lastWeek.processing,
+                    lastWeekFailed = lastWeek.failed,
+                    lastWeekSuccessfully = lastWeek.successfully,
+                    lastWeekCount = lastWeek.total
+                )
+            ).tap { eventSender.sendEvent(LoggingEvent(LogLevel.DEBUG, "Metrics was requested")) }
+    }
 }

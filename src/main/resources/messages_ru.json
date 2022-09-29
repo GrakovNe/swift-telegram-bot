@@ -2,7 +2,7 @@
   {
     "name": "payment_status",
     "type": "HTML",
-    "template": "Информация о платеже\n\n<b>UETR</b>: ${paymentId}\n\n<b>Текущий статус</b>: ${status}\n<b>Дата последнего обновления</b>: ${lastUpdateTimestamp}\nПодписка на обновления активна"
+    "template": "Информация о платеже\n\n<b>UETR</b>: ${paymentId}\n\n<b>Текущий статус</b>: ${status}\n<b>Дата последнего обновления</b>: ${lastUpdateTimestamp}\n\nПодписка на обновления активна"
   },
   {
     "name": "payment_status_with_history",
@@ -17,7 +17,7 @@
   {
     "name": "bot_metrics",
     "type": "HTML",
-    "template": "Информация об отслеживаемых платежах\n\nУспешно зачисленных: <b>${countSuccessfully}</b>\nВ процессе: <b>${countProcessing}</b>\nОтклоненных: <b>${countFailed}</b>\n\nВсего отслеживается: <b>${countTotal}</b>"
+    "template": "Информация об отслеживаемых платежах\n\n<b>Активные за последние 7 дней:</b>\n\nУспешно зачисленных: <b>${lastWeekSuccessfully}</b>\nВ процессе: <b>${lastWeekProcessing}</b>\nОтклоненных: <b>${lastWeekFailed}</b>\n\n<b>Всего:</b>\n\nУспешно зачисленных: <b>${totalSuccessfully}</b>\nВ процессе: <b>${totalProcessing}</b>\nОтклоненных: <b>${totalFailed}</b>\n\nВсего отслеживается: <b>${totalCount}</b>"
   },
   {
     "name": "user_subscriptions",
