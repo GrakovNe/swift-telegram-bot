@@ -9,12 +9,14 @@ import org.grakovne.swiftbot.events.core.EventListener
 import org.grakovne.swiftbot.events.core.EventType
 import org.grakovne.swiftbot.events.internal.LogLevel.Companion.isWorseOrEqualThan
 import org.grakovne.swiftbot.events.internal.LoggingEvent
+import org.grakovne.swiftbot.user.UserReferenceService
 import org.springframework.stereotype.Service
 
 @Service
 class TelegramAlertNotificationSender(
     private val bot: TelegramBot,
-    private val properties: ConfigurationProperties
+    private val properties: ConfigurationProperties,
+    private val userReferenceService: UserReferenceService
 ) : EventListener {
     override fun acceptableEvents(): List<EventType> = listOf(EventType.LOG_SENT)
 
@@ -26,7 +28,9 @@ class TelegramAlertNotificationSender(
 
     private fun processLoggingEvent(event: LoggingEvent) {
         if (event.level.isWorseOrEqualThan(properties.level)) {
-            bot.execute(SendMessage(properties.adminChat, event.toMessage()).parseMode(ParseMode.HTML))
+            userReferenceService.fetchSuperUsers()
+                .forEach { bot.execute(SendMessage(it.id, event.toMessage()).parseMode(ParseMode.HTML)) }
+
         }
     }
 

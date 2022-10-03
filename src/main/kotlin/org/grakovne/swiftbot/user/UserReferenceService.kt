@@ -1,5 +1,6 @@
 package org.grakovne.swiftbot.user
 
+import org.grakovne.swiftbot.user.domain.Type
 import org.grakovne.swiftbot.user.domain.UserReference
 import org.grakovne.swiftbot.user.domain.UserReferenceSource
 import org.grakovne.swiftbot.user.repository.UserReferenceRepository
@@ -8,6 +9,8 @@ import java.util.*
 
 @Service
 class UserReferenceService(private val userReferenceRepository: UserReferenceRepository) {
+
+    fun fetchSuperUsers() = userReferenceRepository.findByType(Type.SUPER_USER)
 
     fun fetchUsersWithSubscription(paymentId: UUID, source: UserReferenceSource): List<UserReference> =
         userReferenceRepository
@@ -32,20 +35,22 @@ class UserReferenceService(private val userReferenceRepository: UserReferenceRep
     fun fetchUser(userId: String, source: UserReferenceSource, language: String): UserReference =
         userReferenceRepository
             .findById(userId)
-            .orElseGet { createUser(userId, setOf(), source, language) }
+            .orElseGet { persistUser(userId, setOf(), source, language, Type.FREE_USER) }
             .copy(language = language)
-            .let { createUser(it.id, it.subscribedPayments, it.source, it.language ?: "en") }
+            .let { persistUser(it.id, it.subscribedPayments, it.source, it.language ?: "en", it.type) }
 
 
-    private fun createUser(
+    private fun persistUser(
         id: String,
         subscribedPayments: Set<UUID>,
         source: UserReferenceSource,
-        language: String
+        language: String,
+        type: Type
     ): UserReference = UserReference(
         id = id,
         subscribedPayments = subscribedPayments,
         source = source,
-        language = language
+        language = language,
+        type = type
     ).let { userReferenceRepository.save(it) }
 }
