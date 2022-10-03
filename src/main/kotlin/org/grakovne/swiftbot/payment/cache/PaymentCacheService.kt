@@ -3,6 +3,7 @@ package org.grakovne.swiftbot.payment.cache
 import arrow.core.Either
 import org.grakovne.swiftbot.dto.PaymentStatus
 import org.grakovne.swiftbot.dto.PaymentView
+import org.grakovne.swiftbot.payment.PaymentProperties
 import org.grakovne.swiftbot.payment.cache.domain.Payment
 import org.grakovne.swiftbot.payment.cache.domain.PaymentCountReport
 import org.grakovne.swiftbot.payment.cache.repository.PaymentRepository
@@ -15,15 +16,21 @@ import java.util.*
 @Service
 class PaymentCacheService(
     private val paymentRepository: PaymentRepository,
-    private val paymentReportService: PaymentReportService
+    private val paymentReportService: PaymentReportService,
+    private val paymentProperties: PaymentProperties
 ) {
 
-    fun countTotal(): PaymentCountReport = PaymentCountReport(
-        total = paymentRepository.countByStatusIn(PaymentStatus.values().toList()),
-        processing = paymentRepository.countByStatusIn(PaymentStatus.processingStatuses()),
-        failed = paymentRepository.countByStatusIn(PaymentStatus.failedStatues()),
-        successfully = paymentRepository.countByStatusIn(PaymentStatus.successStatues())
-    )
+    fun countTotal(): PaymentCountReport {
+        val to = Instant.now().minus(Duration.ofDays(paymentProperties.daysBeforeSuspended))
+
+        return PaymentCountReport(
+            total = paymentRepository.countByStatusIn(PaymentStatus.values().toList()),
+            processing = paymentRepository.countByStatusIn(PaymentStatus.processingStatuses()),
+            failed = paymentRepository.countByStatusIn(PaymentStatus.failedStatues()),
+            successfully = paymentRepository.countByStatusIn(PaymentStatus.successStatues()),
+            suspended = paymentRepository.countByStatusInAndPaymentLastUpdateAtLessThan(PaymentStatus.processingStatuses(), to),
+        )
+    }
 
     fun countLastWeek(): PaymentCountReport {
         val to = Instant.now()
@@ -33,7 +40,8 @@ class PaymentCacheService(
             total = paymentRepository.countByStatusInAndPaymentLastUpdateAtBetween(PaymentStatus.values().toList(), from, to),
             processing = paymentRepository.countByStatusInAndPaymentLastUpdateAtBetween(PaymentStatus.processingStatuses(), from, to),
             failed = paymentRepository.countByStatusInAndPaymentLastUpdateAtBetween(PaymentStatus.failedStatues(), from, to),
-            successfully = paymentRepository.countByStatusInAndPaymentLastUpdateAtBetween(PaymentStatus.successStatues(), from, to)
+            successfully = paymentRepository.countByStatusInAndPaymentLastUpdateAtBetween(PaymentStatus.successStatues(), from, to),
+            suspended = 0
         )
     }
 

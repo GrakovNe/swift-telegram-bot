@@ -4,5 +4,6 @@ data class PaymentCountReport(
     val total: Long,
     val processing: Long,
     val successfully: Long,
-    val failed: Long
+    val failed: Long,
+    val suspended: Long
 )

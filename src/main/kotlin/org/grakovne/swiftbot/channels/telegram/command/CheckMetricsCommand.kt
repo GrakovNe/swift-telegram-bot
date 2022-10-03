@@ -38,6 +38,7 @@ class CheckMetricsCommand(
                 user,
                 BotMetrics(
                     totalProcessing = total.processing,
+                    totalSuspended = total.suspended,
                     totalFailed = total.failed,
                     totalSuccessfully = total.successfully,
                     totalCount = total.total,

@@ -17,7 +17,7 @@
   {
     "name": "bot_metrics",
     "type": "HTML",
-    "template": "Информация об отслеживаемых платежах\n\n<b>Активные за последние 7 дней:</b>\n\nУспешно зачисленных: <b>${lastWeekSuccessfully}</b>\nВ процессе: <b>${lastWeekProcessing}</b>\nОтклоненных: <b>${lastWeekFailed}</b>\n\n<b>Всего:</b>\n\nУспешно зачисленных: <b>${totalSuccessfully}</b>\nВ процессе: <b>${totalProcessing}</b>\nОтклоненных: <b>${totalFailed}</b>\n\nВсего отслеживается: <b>${totalCount}</b>"
+    "template": "Информация об отслеживаемых платежах\n\n<b>Активные за последние 7 дней:</b>\n\nУспешно зачисленных: <b>${lastWeekSuccessfully}</b>\nВ процессе: <b>${lastWeekProcessing}</b>\nОтклоненных: <b>${lastWeekFailed}</b>\n\n<b>За все время:</b>\n\nУспешно зачисленных: <b>${totalSuccessfully}</b>\nВ обработке: <b>${totalProcessing}</b>\nОтклоненных: <b>${totalFailed}</b>\n\nВсего отслеживается: <b>${totalCount}</b>\nИз них в обработке без активности: <b>${totalSuspended}</b>"
   },
   {
     "name": "user_subscriptions",

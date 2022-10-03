@@ -10,6 +10,8 @@ interface PaymentRepository : JpaRepository<Payment, UUID> {
 
     fun countByStatusIn(status: List<PaymentStatus>): Long
 
+    fun countByStatusInAndPaymentLastUpdateAtLessThan(status: List<PaymentStatus>, date: Instant): Long
+
     fun countByStatusInAndPaymentLastUpdateAtBetween(status: List<PaymentStatus>, from: Instant, to: Instant): Long
 
     fun findFirstByStatusInOrderByLastModifiedAtAsc(status: List<PaymentStatus>): Payment?

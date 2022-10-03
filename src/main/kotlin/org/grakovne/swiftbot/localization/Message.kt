@@ -27,12 +27,13 @@ data class PaymentStatusHistoryItem(
 data class BotMetrics(
     val totalSuccessfully: Long,
     val totalProcessing: Long,
+    val totalSuspended: Long,
     val totalFailed: Long,
     val totalCount: Long,
     val lastWeekSuccessfully: Long,
     val lastWeekProcessing: Long,
     val lastWeekFailed: Long,
-    val lastWeekCount: Long,
+    val lastWeekCount: Long
 ) : Message("bot_metrics")
 
 data class UserSubscriptions(

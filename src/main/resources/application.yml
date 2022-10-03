@@ -15,4 +15,7 @@ periodic:
 telegram:
   token: 5463053454:AAGpItf72lRM2u4MYSa95OuZRYx9Q0Zi_YQ
   admin-chat: 93179449
-  level: DEBUG
+  level: INFO
+
+payment:
+  daysBeforeSuspended: 14

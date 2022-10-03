@@ -17,7 +17,7 @@
   {
     "name": "bot_metrics",
     "type": "HTML",
-    "template": "Tracked payments info\n\n<b>Active in the last 7 days:</b>\n\nSuccessfully credited payments: <b>${lastWeekSuccessfully}</b>\nPayments in process: <b>${lastWeekProcessing}</b>\nFailed or rejected payments: <b>${lastWeekFailed}</b>\n\n<b>Total:</b>\n\nSuccessfully credited payments: <b>${totalSuccessfully}</b>\nPayments in process: <b>${totalProcessing}</b>\nFailed or rejected payments: <b>${totalFailed}</b>\n\nTotal tracked payments: <b>${totalCount}</b>"
+    "template": "Tracked payments info\n\n<b>Active in the last 7 days:</b>\n\nSuccessfully credited payments: <b>${lastWeekSuccessfully}</b>\nPayments in process: <b>${lastWeekProcessing}</b>\nFailed or rejected payments: <b>${lastWeekFailed}</b>\n\n<b>Total:</b>\n\nSuccessfully credited payments: <b>${totalSuccessfully}</b>\nPayments in process: <b>${totalProcessing}</b>\nFailed or rejected payments: <b>${totalFailed}</b>\n\nTotal tracked payments: <b>${totalCount}</b>\nIn process but no activity: <b>${totalSuspended}</b>"
   },
   {
     "name": "user_subscriptions",
