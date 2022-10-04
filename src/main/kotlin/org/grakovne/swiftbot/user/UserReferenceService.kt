@@ -5,6 +5,7 @@ import org.grakovne.swiftbot.user.domain.UserReference
 import org.grakovne.swiftbot.user.domain.UserReferenceSource
 import org.grakovne.swiftbot.user.repository.UserReferenceRepository
 import org.springframework.stereotype.Service
+import java.time.Instant
 import java.util.*
 
 @Service
@@ -51,6 +52,7 @@ class UserReferenceService(private val userReferenceRepository: UserReferenceRep
         subscribedPayments = subscribedPayments,
         source = source,
         language = language,
-        type = type
+        type = type,
+        lastActivityTimestamp = Instant.now()
     ).let { userReferenceRepository.save(it) }
 }

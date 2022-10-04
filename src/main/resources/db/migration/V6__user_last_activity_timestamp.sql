@@ -1,0 +1,1 @@
+alter table user_reference add column last_activity_timestamp timestamp;

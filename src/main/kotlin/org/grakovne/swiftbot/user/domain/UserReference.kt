@@ -1,5 +1,6 @@
 package org.grakovne.swiftbot.user.domain
 
+import java.time.Instant
 import java.util.*
 import javax.persistence.*
 
@@ -13,7 +14,8 @@ data class UserReference(
     @ElementCollection(fetch = FetchType.EAGER)
     val subscribedPayments: Set<UUID>,
     @Enumerated(EnumType.STRING)
-    val type: Type
+    val type: Type,
+    val lastActivityTimestamp: Instant?
 )
 
 enum class UserReferenceSource {
