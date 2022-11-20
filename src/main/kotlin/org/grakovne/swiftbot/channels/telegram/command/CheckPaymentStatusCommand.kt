@@ -72,7 +72,7 @@ class CheckPaymentStatusCommand(
                     is PaymentNotFound -> {
                         simpleMessageSender.sendResponse(update, user, PaymentStatusNotFound)
                         eventSender.sendEvent(
-                            LoggingEvent(INFO, "Unable to track non-exists payment. Id is: ${it.paymentId}")
+                            LoggingEvent(DEBUG, "Unable to track non-exists payment. Id is: ${it.paymentId}")
                         )
                         TelegramUpdateProcessingError.EXCEPTION_RESPONSE_SENT
                     }
