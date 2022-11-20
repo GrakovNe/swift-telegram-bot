@@ -9,13 +9,13 @@ import org.grakovne.swiftbot.channels.telegram.messaging.SimpleMessageSender
 import org.grakovne.swiftbot.dto.CommandType
 import org.grakovne.swiftbot.dto.PaymentView
 import org.grakovne.swiftbot.events.core.EventSender
-import org.grakovne.swiftbot.events.internal.LogLevel.DEBUG
-import org.grakovne.swiftbot.events.internal.LogLevel.WARN
+import org.grakovne.swiftbot.events.internal.LogLevel.*
 import org.grakovne.swiftbot.events.internal.LoggingEvent
 import org.grakovne.swiftbot.localization.IncorrectPaymentId
 import org.grakovne.swiftbot.localization.PaymentStatusNotFound
 import org.grakovne.swiftbot.payment.metrics.PaymentReportService
-import org.grakovne.swiftbot.payment.synchronization.CommonSynchronizationError
+import org.grakovne.swiftbot.payment.synchronization.PaymentNotFound
+import org.grakovne.swiftbot.payment.synchronization.UnknownError
 import org.grakovne.swiftbot.payment.synchronization.payment.PaymentService
 import org.grakovne.swiftbot.user.UserReferenceService
 import org.grakovne.swiftbot.user.domain.UserReference
@@ -57,17 +57,24 @@ class CheckPaymentStatusCommand(
             .map { }
             .mapLeft {
                 when (it) {
-                    is CommonSynchronizationError -> {
+                    is UnknownError -> {
                         simpleMessageSender.sendResponse(update, user, PaymentStatusNotFound)
                         eventSender.sendEvent(
                             LoggingEvent(
                                 WARN,
-                                "Unable to track payment status due to ${it.message} source user's message is: ${
+                                "Unable to track payment status due to ${it.response}. Source user's message is: ${
                                     update.message().text()
                                 }"
                             )
                         )
                         TelegramUpdateProcessingError.INTERNAL_ERROR
+                    }
+                    is PaymentNotFound -> {
+                        simpleMessageSender.sendResponse(update, user, PaymentStatusNotFound)
+                        eventSender.sendEvent(
+                            LoggingEvent(INFO, "Unable to track non-exists payment. Id is: ${it.paymentId}")
+                        )
+                        TelegramUpdateProcessingError.EXCEPTION_RESPONSE_SENT
                     }
                 }
             }

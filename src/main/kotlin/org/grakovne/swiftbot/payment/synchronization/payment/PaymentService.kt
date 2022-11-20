@@ -1,7 +1,6 @@
 package org.grakovne.swiftbot.payment.synchronization.payment
 
 import arrow.core.Either
-import arrow.core.sequence
 import org.grakovne.swiftbot.dto.PaymentView
 import org.grakovne.swiftbot.payment.cache.PaymentCacheService
 import org.grakovne.swiftbot.payment.synchronization.PaymentError
@@ -10,7 +9,7 @@ import java.util.*
 
 @Service
 class PaymentService(
-    private val dataServices: List<PaymentSynchronizationProvider>,
+    private val dataService: PaymentSynchronizationProvider,
     private val cacheService: PaymentCacheService
 ) {
 
@@ -21,15 +20,8 @@ class PaymentService(
             ifRight = { Either.Right(it) }
         )
 
-    fun updateAndCache(id: UUID) = retrievePayment(id).tap { cacheService.storePayment(it) }
+    fun updateAndCache(id: UUID) = dataService
+        .fetchStatus(id)
+        .tap { cacheService.storePayment(it) }
 
-    private fun retrievePayment(id: UUID) = dataServices
-        .map { provider ->
-            when (provider.fetchStatus(id)) {
-                is Either.Left -> provider.fetchStatus(id)
-                is Either.Right -> return provider.fetchStatus(id)
-            }
-        }
-        .sequence()
-        .map { it.first() }
 }

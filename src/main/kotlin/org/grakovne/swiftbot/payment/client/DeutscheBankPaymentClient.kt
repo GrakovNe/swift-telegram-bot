@@ -1,9 +1,9 @@
 package org.grakovne.swiftbot.payment.client
 
 import arrow.core.Either
-import arrow.core.flatMap
 import org.grakovne.swiftbot.dto.PaymentStatus
 import org.grakovne.swiftbot.dto.PaymentView
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
@@ -13,26 +13,24 @@ import java.util.*
 @Service
 class DeutscheBankPaymentClient(private val restTemplate: RestTemplate) {
 
-    fun fetchPaymentStatus(id: UUID): Either<String, PaymentView> {
-        val response = try {
-            fetchResponse(id)
-        } catch (ex: HttpStatusCodeException) {
-            Either.Left(ex.statusText)
-        }
-
-        return response
-            .flatMap {
-                it.body
-                    ?.asCommon()
-                    ?.let { status -> Either.Right(status) }
-                    ?: Either.Left("Unable to find payment status. Response body is: ${it.body.toString()}")
-            }
-            .mapLeft { "Third-party service responded with error status: $it" }
+    fun fetchPaymentStatus(id: UUID) = try {
+        fetchResponse(id)
+    } catch (ex: HttpStatusCodeException) {
+        Either.Left(UnknownError(ex.statusText, id))
     }
 
-    private fun fetchResponse(id: UUID) = restTemplate
+    private fun fetchResponse(id: UUID): Either<DeutscheBankPaymentError, PaymentView> = restTemplate
         .getForEntity("$url=$id", DeutscheBankPaymentStatus::class.java)
-        .let { Either.Right(it) }
+        .let {
+            when (it.statusCode) {
+                HttpStatus.OK -> it.body
+                    ?.asCommon()
+                    ?.let { status -> Either.Right(status) }
+                    ?: Either.Left(InconsistencyError(it.statusCodeValue, id))
+                HttpStatus.NO_CONTENT -> Either.Left(PaymentNotFound(id))
+                else -> Either.Left(UnknownError(it, id))
+            }
+        }
 
     companion object {
         private const val url = "https://corporateapi.db.com/payments/data/gpi/v1/gpiTransactionInfo?uetr"
