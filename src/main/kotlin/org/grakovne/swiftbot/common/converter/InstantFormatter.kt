@@ -5,7 +5,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 val dateFormatter: DateTimeFormatter = DateTimeFormatter
-    .ofPattern("dd.MM.yyyy hh:mm:ss")
+    .ofPattern("dd.MM.yyyy HH:mm:ss")
     .withZone(ZoneId.of("UTC"));
 
 fun Instant.toMessage(): String = dateFormatter.format(this)
